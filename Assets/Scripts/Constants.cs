@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.1";
+        public const string VERSION = "alpha 1.0.2";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
@@ -55,6 +55,7 @@ namespace SlingRun
 
         public const float BALL_MAX_MAGNITUDE = 1.5f;
         public const float BALL_MIN_SPEED = 1f;
+        public const float BALL_RESET_SPEED = 0.5f;
         public const float BALL_TOUCH_SIZE = 0.3f;
         public static readonly Color PREDICT_LINE_COLOR = Color.white;
         public const float PREDICT_LINE_THICKNESS = 0.05f;

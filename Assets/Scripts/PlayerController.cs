@@ -11,7 +11,6 @@ namespace SlingRun
         private Vector3 _mouseStartPos;
 
         private Rigidbody2D _rb2D;
-        private Vector3 _respawnPoint;
         private bool _sliding;
         private Vector3 _startPos;
         public bool Locked;
@@ -27,7 +26,6 @@ namespace SlingRun
         {
             _rb2D = GetComponent<Rigidbody2D>();
             _startPos = _rb2D.position;
-            _respawnPoint = _rb2D.position;
             _inverseScaleTime = 1f / Constants.BALL_RESPAWN_TIME;
         }
 
@@ -36,7 +34,11 @@ namespace SlingRun
         {
             if (UiController.Paused || Locked) return;
             if (Moving)
+            {
+                if(_rb2D.velocity.magnitude <= Constants.BALL_RESET_SPEED)
+                    Respawn();
                 return;
+            }
             if (Input.GetMouseButton(0))
             {
                 if (!_mouseLastClicked)
@@ -143,8 +145,7 @@ namespace SlingRun
                 yield return null;
             }
 
-            transform.position = _respawnPoint;
-            _startPos = _respawnPoint;
+            transform.position = _startPos;
             _rb2D.velocity = Vector2.zero;
             Moving = false;
             GameManager.Instance.LooseLife();
