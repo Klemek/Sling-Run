@@ -1,87 +1,154 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Random = System.Random;
 
 namespace SlingRun
 {
     public class LevelManager : MonoBehaviour
     {
-        public Level[] levels;
-        public PlayerController ballTemplate;
-        public GameObject borders;
-        public float moveTime;
+        private GameObject _currentLevel;
+        private Vector3 _delta;
+        private float _inverseMoveTime;
+        private GameObject _nextLevel;
+        internal PlayerController Ball;
+        public PlayerController BallTemplate;
+        public GameObject Borders;
+        public LevelFragment[] LevelFragments;
 
-        public float levelHeight;
-        public float levelMaxX;
-
-        private GameObject currentLevel;
-        private GameObject nextLevel;
-        internal PlayerController ball;
-        private Vector3 delta;
-        private float inverseMoveTime;
-        
         private void Awake()
         {
-            delta = new Vector3(0, levelHeight, 0);
-            inverseMoveTime = 1f / moveTime;
+            _delta = new Vector3(0, Constants.LEVEL_HEIGHT, 0);
+            _inverseMoveTime = 1f / Constants.LEVEL_MOVE_TIME;
         }
-        
+
         internal void LoadLevel(bool start, int level)
         {
             if (start)
             {
-                currentLevel = Instantiate(levels[0].gameObject, Vector3.zero, Quaternion.identity);
-                ball = Instantiate(ballTemplate, ballTemplate.transform.position, Quaternion.identity);
-                Instantiate(borders, borders.transform.position, Quaternion.identity);
+                _currentLevel = new GameObject("Level 0");
+                Ball = Instantiate(BallTemplate, BallTemplate.transform.position, Quaternion.identity);
+                Instantiate(Borders, Borders.transform.position, Quaternion.identity);
             }
             else
             {
-                //TODO choose level from difficulty
-                var r = new System.Random();
-                nextLevel = Instantiate(levels[r.Next(levels.Length)].gameObject, delta, Quaternion.identity);
+                _nextLevel = GenerateLevel(level);
+                _nextLevel.transform.position = _delta;
                 StartCoroutine(SmoothMove());
             }
         }
 
-        private Vector3 getBallNextPosition()
+        private GameObject GenerateLevel(int level)
         {
-            var pos = ball.gameObject.transform.position - delta;
+            var newLevel = new GameObject("Level " + level);
+            var r = new Random();
 
-            if (pos.x > levelMaxX)
-                pos.x = levelMaxX;
+            bool valid;
+            int[] frags;
+            float h;
+            do
+            {
+                var nFrag = r.Next(1, Constants.MAX_FRAGMENT_NUMBER + 1);
+                var diff = 0;
+                frags = new int[nFrag];
+                h = 0f;
+                for (var i = 0; i < nFrag; i++)
+                {
+                    frags[i] = r.Next(LevelFragments.Length);
+                    h += LevelFragments[frags[i]].Height;
+                    diff += LevelFragments[frags[i]].Difficulty;
+                }
 
-            if (pos.x < -levelMaxX)
-                pos.x = -levelMaxX;
+                if (nFrag > 1)
+                    h += (nFrag - 1) * Constants.LEVEL_FRAGMENT_MAX_MARGIN;
+
+                valid = h <= Constants.LEVEL_MAX_Y - Constants.LEVEL_MIN_Y && IsDifficultyCorrect(diff, level);
+            } while (!valid);
+
+            var endH = Constants.LEVEL_MAX_Y - h;
+            var startH = Constants.LEVEL_MIN_Y;
+
+            foreach (var f in frags)
+            {
+                var fh = LevelFragments[f].Height;
+
+                endH += fh;
+
+                var py = NextFloat(r, startH + fh / 2f, endH - fh / 2f);
+
+                var pos = new Vector3(0, py, 0);
+
+                var rotation = Quaternion.identity;
+                if (r.Next(2) == 0) //flip horizontaly
+                    rotation = Quaternion.AngleAxis(180f, Vector3.up);
+
+                var frag = Instantiate(LevelFragments[f].gameObject, pos, rotation);
+                frag.transform.parent = newLevel.transform;
+
+                startH = py + fh / 2 + NextFloat(r, Constants.LEVEL_FRAGMENT_MIN_MARGIN,
+                             Constants.LEVEL_FRAGMENT_MAX_MARGIN);
+                endH += Constants.LEVEL_FRAGMENT_MAX_MARGIN;
+            }
+
+            return newLevel;
+        }
+
+        private static bool IsDifficultyCorrect(int diff, int level)
+        {
+            var maxDiff = GetLevelDifficulty(level);
+            var minDiff = Math.Round(maxDiff * (1f - Constants.DIFFICULTY_MAX_MARGIN));
+            return minDiff <= diff && diff <= maxDiff;
+        }
+
+        private static int GetLevelDifficulty(int level)
+        {
+            return (int) Math.Round(Constants.MAX_DIFFICULTY * (1f - Math.Exp(-Constants.DIFFICULTY_FACTOR * level)));
+        }
+
+        private static float NextFloat(Random r, float min, float max)
+        {
+            return (float) (r.NextDouble() * (max - min) + min);
+        }
+
+        private Vector3 GetBallNextPosition()
+        {
+            var pos = Ball.gameObject.transform.position - _delta;
+
+            if (pos.x > Constants.BALL_MAX_X)
+                pos.x = Constants.BALL_MAX_X;
+
+            if (pos.x < -Constants.BALL_MAX_X)
+                pos.x = -Constants.BALL_MAX_X;
 
             return pos;
         }
-        
+
         private IEnumerator SmoothMove()
         {
-            var posBall = getBallNextPosition();
-            
-            var sqrRemainingDistance = nextLevel.transform.position.sqrMagnitude;
+            var posBall = GetBallNextPosition();
+
+            var sqrRemainingDistance = _nextLevel.transform.position.sqrMagnitude;
             while (sqrRemainingDistance > float.Epsilon)
             {
-                var newPosition = Vector3.MoveTowards(ball.transform.position, posBall, inverseMoveTime * Time.deltaTime);
-                ball.transform.position = newPosition;
-                
-                newPosition = Vector3.MoveTowards(currentLevel.transform.position, -delta, inverseMoveTime * Time.deltaTime);
-                currentLevel.transform.position = newPosition;
-                
-                newPosition = Vector3.MoveTowards(nextLevel.transform.position, Vector3.zero, inverseMoveTime * Time.deltaTime);
-                nextLevel.transform.position = newPosition;
-                
-                sqrRemainingDistance = nextLevel.transform.position.sqrMagnitude;
+                var newPosition =
+                    Vector3.MoveTowards(Ball.transform.position, posBall, _inverseMoveTime * Time.deltaTime);
+                Ball.transform.position = newPosition;
+
+                newPosition = Vector3.MoveTowards(_currentLevel.transform.position, -_delta,
+                    _inverseMoveTime * Time.deltaTime);
+                _currentLevel.transform.position = newPosition;
+
+                newPosition = Vector3.MoveTowards(_nextLevel.transform.position, Vector3.zero,
+                    _inverseMoveTime * Time.deltaTime);
+                _nextLevel.transform.position = newPosition;
+
+                sqrRemainingDistance = _nextLevel.transform.position.sqrMagnitude;
                 yield return null;
             }
 
-            ball.Release();
-            Destroy(currentLevel);
-            currentLevel = nextLevel;
-
+            Ball.Release();
+            Destroy(_currentLevel);
+            _currentLevel = _nextLevel;
         }
     }
 }

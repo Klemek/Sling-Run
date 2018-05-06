@@ -4,13 +4,12 @@ namespace SlingRun
 {
     public class Loader : MonoBehaviour
     {
-
-        public GameManager gameManager;
+        public GameManager GameManager;
 
         private void Awake()
         {
-            if (GameManager.instance == null)
-                Instantiate(gameManager);
+            if (GameManager.Instance == null)
+                Instantiate(GameManager);
         }
     }
 }

@@ -1,128 +1,166 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions.Must;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace SlingRun
 {
-	public class PlayerController : MonoBehaviour
-	{
+    public class PlayerController : MonoBehaviour
+    {
+        private float _inverseScaleTime;
+        private GameObject _line;
+        private bool _mouseLastClicked;
+        private Vector3 _mouseStartPos;
 
-		public float speedFactor;
+        private Rigidbody2D _rb2D;
+        private Vector3 _respawnPoint;
+        private bool _sliding;
+        private Vector3 _startPos;
+        public bool Locked;
 
-		public GameObject defaultSprite;
-		
-		
-		public bool moving;
-		public bool locked;
 
-		private Rigidbody2D rb2d;
-		private Vector3 startPos;
-		private bool mouseLastClicked;
-		private Vector3 mouseStartPos;
-		private bool sliding;
-		private GameObject line;
+        public bool Moving;
+        public float SpeedFactor;
 
-		// Use this for initialization
-		private void Start()
-		{
-			rb2d = GetComponent<Rigidbody2D>();
-			startPos = rb2d.position;
-		}
+        public GameObject DefaultSprite;
 
-		// Update is called once per frame
-		private void Update()
-		{
-			if (UIController.paused || locked) return;
-			if (moving)
-				return;
-			if (Input.GetMouseButton(0))
-			{
-				if (!mouseLastClicked)
-				{
-					var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // Use this for initialization
+        private void Start()
+        {
+            _rb2D = GetComponent<Rigidbody2D>();
+            _startPos = _rb2D.position;
+            _respawnPoint = _rb2D.position;
+            _inverseScaleTime = 1f / Constants.BALL_RESPAWN_TIME;
+        }
 
-					if ((mousePos - Constants.MOUSE_POS_DEPTH - transform.position).magnitude < Constants.BALL_TOUCH_SIZE)
-					{
-						mouseStartPos = mousePos;
-						sliding = true;
-					}
-				}
+        // Update is called once per frame
+        private void Update()
+        {
+            if (UiController.Paused || Locked) return;
+            if (Moving)
+                return;
+            if (Input.GetMouseButton(0))
+            {
+                if (!_mouseLastClicked)
+                {
+                    var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-				if (sliding)
-				{
-					var delta = Camera.main.ScreenToWorldPoint(Input.mousePosition) - mouseStartPos;
+                    if ((mousePos - Constants.MOUSE_POS_DEPTH - transform.position).magnitude <
+                        Constants.BALL_TOUCH_SIZE)
+                    {
+                        _mouseStartPos = mousePos;
+                        _sliding = true;
+                    }
+                }
 
-					if (delta.magnitude > Constants.BALL_MAX_MAGNITUDE)
-						delta = delta.normalized * Constants.BALL_MAX_MAGNITUDE;
+                if (_sliding)
+                {
+                    var delta = Camera.main.ScreenToWorldPoint(Input.mousePosition) - _mouseStartPos;
 
-					rb2d.position = startPos + delta;
-					
-					if(line != null)
-						Destroy(line);
-					line = LineFactory.createDashedLine(defaultSprite,
-						startPos+delta+Constants.PREDICT_LINE_DEPTH, startPos-delta+Constants.PREDICT_LINE_DEPTH,
-						Constants.PREDICT_LINE_COLOR, Constants.PREDICT_LINE_THICKNESS, Constants.PREDICT_LINE_DASH_LENGTH);
-				}
+                    if (delta.magnitude > Constants.BALL_MAX_MAGNITUDE)
+                        delta = delta.normalized * Constants.BALL_MAX_MAGNITUDE;
 
-				mouseLastClicked = true;
-			}
-			else
-			{
-				if (mouseLastClicked)
-				{
-					var force = (startPos - (Vector3) rb2d.position) * speedFactor;
+                    if (delta.y > 0)
+                        delta.y = 0;
 
-					Destroy(line);
-					
-					if (force.magnitude >= Constants.BALL_MIN_SPEED)
-					{
-						rb2d.velocity = force;
-						moving = true;
-					}
-					else
-					{
-						rb2d.position = startPos;
-					}
+                    _rb2D.position = _startPos + delta;
 
-					sliding = false;
-				}
+                    if (_line != null)
+                        Destroy(_line);
+                    _line = LineFactory.CreateDashedLine(DefaultSprite,
+                        _startPos + delta + Constants.PREDICT_LINE_DEPTH,
+                        _startPos - delta + Constants.PREDICT_LINE_DEPTH,
+                        Constants.PREDICT_LINE_COLOR, Constants.PREDICT_LINE_THICKNESS,
+                        Constants.PREDICT_LINE_DASH_LENGTH);
+                }
 
-				mouseLastClicked = false;
-			}
-		}
+                _mouseLastClicked = true;
+            }
+            else
+            {
+                if (_mouseLastClicked)
+                {
+                    var force = (_startPos - (Vector3) _rb2D.position) * SpeedFactor;
 
-		private void OnTriggerEnter2D(Collider2D collision)
-		{
-			if (locked || UIController.paused) return;
-			if (collision.gameObject.CompareTag(Constants.RESPAWN_TAG))
-			{
-				Respawn();
-			}
-			else if (collision.gameObject.CompareTag(Constants.FINISH_TAG))
-			{
-				GameManager.instance.NextLevel();
-				rb2d.velocity = Vector2.zero;
-				moving = false;
-				locked = true;
-			}
-		}
+                    Destroy(_line);
 
-		internal void Release()
-		{
-			rb2d.velocity = Vector2.zero;
-			moving = false;
-			locked = false;
-			startPos = rb2d.position;
-		}
+                    if (force.magnitude >= Constants.BALL_MIN_SPEED)
+                    {
+                        _rb2D.velocity = force;
+                        Moving = true;
+                    }
+                    else
+                    {
+                        _rb2D.position = _startPos;
+                    }
 
-		internal void Respawn()
-		{
-			if (moving && !locked)
-			{
-				rb2d.velocity = Vector2.zero;
-				moving = false;
-				rb2d.position = startPos;
-				GameManager.instance.LooseLife();
-			}
-		}
-	}
+                    _sliding = false;
+                }
+
+                _mouseLastClicked = false;
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (Locked || UiController.Paused) return;
+            if (collision.gameObject.CompareTag(Constants.RESPAWN_TAG))
+            {
+                Respawn();
+            }
+            else if (collision.gameObject.CompareTag(Constants.FINISH_TAG))
+            {
+                GameManager.Instance.NextLevel();
+                _rb2D.velocity = Vector2.zero;
+                Moving = false;
+                Locked = true;
+            }
+        }
+
+        internal void Release()
+        {
+            _rb2D.velocity = Vector2.zero;
+            Moving = false;
+            Locked = false;
+            _startPos = _rb2D.position;
+        }
+
+        internal void Respawn()
+        {
+            if (!Moving || Locked) return;
+            StartCoroutine(SmoothRespawn());
+        }
+
+        private IEnumerator SmoothRespawn()
+        {
+            Locked = true;
+            var finalScale = transform.localScale;
+            var sqrRemainingScale = transform.localScale.magnitude;
+            while (sqrRemainingScale > float.Epsilon)
+            {
+                var newScale =
+                    Vector3.MoveTowards(transform.localScale, Vector3.zero, _inverseScaleTime * Time.deltaTime);
+                transform.localScale = newScale;
+                sqrRemainingScale = transform.localScale.magnitude;
+                yield return null;
+            }
+
+            transform.position = _respawnPoint;
+            _rb2D.velocity = Vector2.zero;
+            Moving = false;
+            GameManager.Instance.LooseLife();
+            if (GameManager.Instance.Life > 0)
+            {
+                sqrRemainingScale = (finalScale - transform.localScale).magnitude;
+                while (sqrRemainingScale > float.Epsilon)
+                {
+                    var newScale =
+                        Vector3.MoveTowards(transform.localScale, finalScale, _inverseScaleTime * Time.deltaTime);
+                    transform.localScale = newScale;
+                    sqrRemainingScale = (finalScale - transform.localScale).magnitude;
+                    yield return null;
+                }
+
+                Locked = false;
+            }
+        }
+    }
 }

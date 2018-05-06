@@ -2,7 +2,7 @@
 
 namespace SlingRun
 {
-    public class PlayerData
+    public static class PlayerData
     {
         public static int HighScore
         {

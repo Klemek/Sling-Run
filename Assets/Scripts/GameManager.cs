@@ -1,31 +1,27 @@
-﻿using System.Diagnostics;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Debug = UnityEngine.Debug;
 
 namespace SlingRun
 {
     public class GameManager : MonoBehaviour
     {
-        public static GameManager instance;
+        public static GameManager Instance;
 
-        public int level;
-        public int life;
+        private LevelManager _levelManager;
 
-        private LevelManager levelManager;
+        public int Level;
+        public int Life;
 
         private void Awake()
         {
-            if (instance == null)
-                instance = this;
-            else if (instance != this)
+            if (Instance == null)
+                Instance = this;
+            else if (Instance != this)
                 Destroy(gameObject);
 
             DontDestroyOnLoad(gameObject);
 
-            levelManager = GetComponent<LevelManager>();
+            _levelManager = GetComponent<LevelManager>();
         }
 
         private void OnEnable()
@@ -40,46 +36,43 @@ namespace SlingRun
 
         private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
         {
-            if (scene.buildIndex == Constants.GAME_SCENE)
-            {
-                StartGame();
-            }
+            if (scene.buildIndex == Constants.GAME_SCENE) StartGame();
         }
 
         private void StartGame()
         {
-            level = 0;
-            life = Constants.START_LIFE;
-            levelManager.LoadLevel(true, level);
-            UIController.Instance.SetLevel(level);
-            UIController.Instance.SetLife(life);
+            Level = 0;
+            Life = Constants.START_LIFE;
+            _levelManager.LoadLevel(true, Level);
+            UiController.Instance.SetLevel(Level);
+            UiController.Instance.SetLife(Life);
         }
 
         internal void NextLevel()
         {
-            level++;
-            UIController.Instance.SetLevel(level);
-            levelManager.LoadLevel(false, level);
+            Level++;
+            UiController.Instance.SetLevel(Level);
+            _levelManager.LoadLevel(false, Level);
         }
 
         internal void FinishGame()
         {
-            if (level > PlayerData.HighScore)
-                PlayerData.HighScore = level;
-            if(life == 0)
-                UIController.Instance.ShowEndPopup();
+            if (Level > PlayerData.HighScore)
+                PlayerData.HighScore = Level;
+            if (Life == 0)
+                UiController.Instance.ShowEndPopup();
         }
 
         internal void Respawn()
         {
-            levelManager.ball.Respawn();
+            _levelManager.Ball.Respawn();
         }
-        
+
         internal void LooseLife()
         {
-            life--;
-            UIController.Instance.SetLife(life);
-            if (life == 0)
+            Life--;
+            UiController.Instance.SetLife(Life);
+            if (Life == 0)
                 FinishGame();
         }
     }

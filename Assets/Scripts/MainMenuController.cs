@@ -6,8 +6,9 @@ namespace SlingRun
 {
     public class MainMenuController : MonoBehaviour
     {
-        public TextMeshProUGUI highScoreText;
-        
+        public TextMeshProUGUI HighScoreText;
+        public TextMeshProUGUI VersionText;
+
         private void PlayGame()
         {
             SceneManager.LoadScene(Constants.GAME_SCENE);
@@ -20,18 +21,13 @@ namespace SlingRun
 
         private void Start()
         {
-            highScoreText.text = string.Format(Constants.HIGHSCORE_TEXT, PlayerData.HighScore);
+            HighScoreText.text = string.Format(Constants.HIGHSCORE_TEXT, PlayerData.HighScore);
+            VersionText.text = Constants.VERSION;
         }
         
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                QuitGame();
-            }
+            if (Input.GetKeyDown(KeyCode.Escape)) QuitGame();
         }
-
-        
     }
 }
-

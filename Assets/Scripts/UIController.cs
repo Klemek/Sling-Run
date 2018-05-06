@@ -1,31 +1,30 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace SlingRun
 {
-    public class UIController : MonoBehaviour
+    public class UiController : MonoBehaviour
     {
-        public static bool paused;
+        public static bool Paused;
 
-        public GameObject pauseMenu;
-        public GameObject endPopup;
-        public GameObject buttons;
+        private static UiController _instance;
+        public GameObject Buttons;
+        public GameObject EndPopup;
 
-        public TextMeshProUGUI highScoreText;
-        public TextMeshProUGUI levelText;
-        public TextMeshProUGUI lifeText;
+        public TextMeshProUGUI HighScoreText;
+        public TextMeshProUGUI LevelText;
+        public TextMeshProUGUI LifeText;
 
-        private static UIController instance;
+        public GameObject PauseMenu;
 
-        public static UIController Instance
+        public static UiController Instance
         {
             get
             {
-                if (instance == null)
-                    instance = GameObject.Find(Constants.UICONTROLLER_OBJECT_NAME).GetComponent<UIController>();
-                return instance;
+                if (_instance == null)
+                    _instance = GameObject.Find(Constants.UICONTROLLER_OBJECT_NAME).GetComponent<UiController>();
+                return _instance;
             }
         }
 
@@ -33,40 +32,36 @@ namespace SlingRun
         private void Update()
         {
             if (!Input.GetKeyDown(KeyCode.Escape)) return;
-            if (paused)
-            {
+            if (Paused)
                 Resume();
-            }
             else
-            {
                 Pause();
-            }
         }
 
         public void Pause()
         {
-            pauseMenu.SetActive(true);
-            buttons.SetActive(false);
+            PauseMenu.SetActive(true);
+            Buttons.SetActive(false);
             PauseGame(true);
         }
 
         public void Resume()
         {
-            pauseMenu.SetActive(false);
-            buttons.SetActive(true);
+            PauseMenu.SetActive(false);
+            Buttons.SetActive(true);
             PauseGame(false);
         }
 
         public void Quit()
         {
             PauseGame(false);
-            GameManager.instance.FinishGame();
+            GameManager.Instance.FinishGame();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE);
         }
 
         public void Respawn()
         {
-            GameManager.instance.Respawn();
+            GameManager.Instance.Respawn();
         }
 
         public void Restart()
@@ -77,7 +72,7 @@ namespace SlingRun
 
         private void PauseGame(bool pause)
         {
-            paused = pause;
+            Paused = pause;
             Time.timeScale = pause ? 0f : 1f;
         }
 
@@ -89,22 +84,22 @@ namespace SlingRun
 
         internal void SetLevel(int level)
         {
-            levelText.text = level.ToString();
+            LevelText.text = level.ToString();
             if (level <= PlayerData.HighScore)
-                highScoreText.text = string.Format(Constants.HIGHSCORE_TEXT, PlayerData.HighScore);
+                HighScoreText.text = string.Format(Constants.HIGHSCORE_TEXT, PlayerData.HighScore);
             else
-                highScoreText.text = Constants.NEW_HIGHSCORE_TEXT;
+                HighScoreText.text = Constants.NEW_HIGHSCORE_TEXT;
         }
 
         internal void SetLife(int life)
         {
-            lifeText.text = life.ToString();
+            LifeText.text = life.ToString();
         }
 
         internal void ShowEndPopup()
         {
-            buttons.SetActive(false);
-            endPopup.SetActive(true);
+            Buttons.SetActive(false);
+            EndPopup.SetActive(true);
             PauseGame(true);
         }
     }
