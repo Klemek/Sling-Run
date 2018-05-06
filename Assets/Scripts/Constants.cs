@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.2";
+        public const string VERSION = "alpha 1.0.3";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
@@ -35,7 +35,7 @@ namespace SlingRun
         #region Level Manager
 
         public const float LEVEL_MOVE_TIME = 0.1f;
-        public const float LEVEL_HEIGHT = 10f;
+        public const float LEVEL_HEIGHT = 9f;
         public const float BALL_MAX_X = 1.1f;
 
         public const float LEVEL_MIN_Y = -1.5f;
