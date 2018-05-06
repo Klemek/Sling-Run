@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.3";
+        public const string VERSION = "alpha 1.0.4";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
