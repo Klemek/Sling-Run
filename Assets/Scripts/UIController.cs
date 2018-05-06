@@ -78,7 +78,7 @@ namespace SlingRun
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (pauseStatus)
+            if (pauseStatus && !Paused)
                 Pause();
         }
 

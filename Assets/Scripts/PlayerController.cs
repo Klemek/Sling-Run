@@ -144,6 +144,7 @@ namespace SlingRun
             }
 
             transform.position = _respawnPoint;
+            _startPos = _respawnPoint;
             _rb2D.velocity = Vector2.zero;
             Moving = false;
             GameManager.Instance.LooseLife();
