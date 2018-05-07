@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace SlingRun
 {
     public class PlayerController : MonoBehaviour
     {
-        private float _inverseScaleTime;
         private GameObject _line;
         private bool _mouseLastClicked;
         private Vector3 _mouseStartPos;
@@ -13,6 +13,7 @@ namespace SlingRun
         private Rigidbody2D _rb2D;
         private bool _sliding;
         private Vector3 _startPos;
+        private Vector3 _scale;
         public bool Locked;
 
 
@@ -26,7 +27,6 @@ namespace SlingRun
         {
             _rb2D = GetComponent<Rigidbody2D>();
             _startPos = _rb2D.position;
-            _inverseScaleTime = 1f / Constants.BALL_RESPAWN_TIME;
         }
 
         // Update is called once per frame
@@ -35,8 +35,8 @@ namespace SlingRun
             if (UiController.Paused || Locked) return;
             if (Moving)
             {
-                if(_rb2D.velocity.magnitude <= Constants.BALL_RESET_SPEED)
-                    Respawn();
+                if (_rb2D.velocity.magnitude <= Constants.BALL_RESET_SPEED)
+                    StartCoroutine(CoroutineUtils.Timer(1, Respawn));
                 return;
             }
             if (Input.GetMouseButton(0))
@@ -128,41 +128,25 @@ namespace SlingRun
         internal void Respawn()
         {
             if (!Moving || Locked) return;
-            StartCoroutine(SmoothRespawn());
+            Locked = true;
+            _scale = transform.localScale;
+            StartCoroutine(CoroutineUtils.SmoothScale(Vector3.zero, Constants.BALL_RESPAWN_TIME, RespawnMiddle, gameObject));
         }
 
-        private IEnumerator SmoothRespawn()
+        private void RespawnMiddle()
         {
-            Locked = true;
-            var finalScale = transform.localScale;
-            var sqrRemainingScale = transform.localScale.magnitude;
-            while (sqrRemainingScale > float.Epsilon)
-            {
-                var newScale =
-                    Vector3.MoveTowards(transform.localScale, Vector3.zero, _inverseScaleTime * Time.deltaTime);
-                transform.localScale = newScale;
-                sqrRemainingScale = transform.localScale.magnitude;
-                yield return null;
-            }
-
             transform.position = _startPos;
             _rb2D.velocity = Vector2.zero;
             Moving = false;
             GameManager.Instance.LooseLife();
             if (GameManager.Instance.Life > 0)
-            {
-                sqrRemainingScale = (finalScale - transform.localScale).magnitude;
-                while (sqrRemainingScale > float.Epsilon)
-                {
-                    var newScale =
-                        Vector3.MoveTowards(transform.localScale, finalScale, _inverseScaleTime * Time.deltaTime);
-                    transform.localScale = newScale;
-                    sqrRemainingScale = (finalScale - transform.localScale).magnitude;
-                    yield return null;
-                }
-
-                Locked = false;
-            }
+                StartCoroutine(CoroutineUtils.SmoothScale(_scale, Constants.BALL_RESPAWN_TIME, RespawnEnd, gameObject));
         }
+
+        private void RespawnEnd()
+        {
+            Locked = false;
+        }
+        
     }
 }

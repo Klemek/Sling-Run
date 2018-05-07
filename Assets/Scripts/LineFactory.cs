@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SlingRun
 {
-    public class LineFactory : MonoBehaviour
+    public static class LineFactory
     {
         private static GameObject CreateSimpleLine(GameObject defaultSprite, Vector3 p1, Vector3 p2, Color color,
             float thickness)
@@ -13,7 +14,7 @@ namespace SlingRun
             var length = tmp.magnitude;
             var angle = (float) (Math.Atan2(tmp.y, tmp.x) * (180 / Math.PI));
 
-            var obj = Instantiate(defaultSprite, center, Quaternion.identity);
+            var obj = Object.Instantiate(defaultSprite, center, Quaternion.identity);
             var renderer = obj.GetComponent<SpriteRenderer>();
             renderer.color = color;
 

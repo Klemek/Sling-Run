@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.4";
+        public const string VERSION = "alpha 1.0.5";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
@@ -30,7 +30,7 @@ namespace SlingRun
         public const string RESPAWN_TAG = "Respawn";
         public const string FINISH_TAG = "Finish";
 
-        public const int START_LIFE = 3;
+        public const int START_LIFE = 5;
 
         #region Level Manager
 
@@ -39,7 +39,7 @@ namespace SlingRun
         public const float BALL_MAX_X = 1.1f;
 
         public const float LEVEL_MIN_Y = -1.5f;
-        public const float LEVEL_MAX_Y = 4.5f;
+        public const float LEVEL_MAX_Y = 4f;
         public const float LEVEL_FRAGMENT_MIN_MARGIN = 1f;
         public const float LEVEL_FRAGMENT_MAX_MARGIN = 1.5f;
 
@@ -56,7 +56,7 @@ namespace SlingRun
         public const float BALL_MAX_MAGNITUDE = 1.5f;
         public const float BALL_MIN_SPEED = 1f;
         public const float BALL_RESET_SPEED = 0.5f;
-        public const float BALL_TOUCH_SIZE = 0.3f;
+        public const float BALL_TOUCH_SIZE = 0.6f;
         public static readonly Color PREDICT_LINE_COLOR = Color.white;
         public const float PREDICT_LINE_THICKNESS = 0.05f;
         public const float PREDICT_LINE_DASH_LENGTH = 0.1f;

@@ -7,9 +7,10 @@ namespace SlingRun
 {
     public class LevelManager : MonoBehaviour
     {
-        private GameObject _currentLevel;
+        
         private Vector3 _delta;
         private float _inverseMoveTime;
+        private GameObject _currentLevel;
         private GameObject _nextLevel;
         internal PlayerController Ball;
         public PlayerController BallTemplate;
@@ -34,8 +35,18 @@ namespace SlingRun
             {
                 _nextLevel = GenerateLevel(level);
                 _nextLevel.transform.position = _delta;
-                StartCoroutine(SmoothMove());
+
+                StartCoroutine(CoroutineUtils.SmoothMove(Constants.LEVEL_MOVE_TIME, FinishedMoving,
+                    new[] {Ball.gameObject, _currentLevel, _nextLevel},
+                    new [] {GetBallNextPosition(), -_delta, Vector3.zero}));
             }
+        }
+
+        private void FinishedMoving()
+        {
+            Ball.Release();
+            Destroy(_currentLevel);
+            _currentLevel = _nextLevel;
         }
 
         private GameObject GenerateLevel(int level)
