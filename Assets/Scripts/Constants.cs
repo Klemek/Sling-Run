@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.5";
+        public const string VERSION = "alpha 1.0.6";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
@@ -44,7 +44,7 @@ namespace SlingRun
         public const float LEVEL_FRAGMENT_MAX_MARGIN = 1.5f;
 
         public const int MAX_FRAGMENT_NUMBER = 3;
-        private const int MAX_FRAGMENT_DIFFICULTY = 3;
+        private const int MAX_FRAGMENT_DIFFICULTY = 4;
         public const int MAX_DIFFICULTY = MAX_FRAGMENT_NUMBER * MAX_FRAGMENT_DIFFICULTY;
         public const float DIFFICULTY_FACTOR = 0.06f;
         public const float DIFFICULTY_MAX_MARGIN = 0.2f;

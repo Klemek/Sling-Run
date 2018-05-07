@@ -6,5 +6,6 @@ namespace SlingRun
     {
         public int Difficulty;
         public float Height;
+        public bool CanFlip;
     }
 }

@@ -130,6 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Difficulty: 2
   Height: 2
+  CanFlip: 1
 --- !u!212 &212510728645603114
 SpriteRenderer:
   m_ObjectHideFlags: 1

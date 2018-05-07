@@ -90,7 +90,7 @@ namespace SlingRun
                 var pos = new Vector3(0, py, 0);
 
                 var rotation = Quaternion.identity;
-                if (r.Next(2) == 0) //flip horizontaly
+                if (LevelFragments[f].CanFlip && r.Next(2) == 0) //flip horizontaly
                     rotation = Quaternion.AngleAxis(180f, Vector3.up);
 
                 var frag = Instantiate(LevelFragments[f].gameObject, pos, rotation);
