@@ -13,7 +13,7 @@ Prefab:
   m_IsPrefabParent: 1
 --- !u!1 &1335581673552854
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 212078645984589234}
   - component: {fileID: 50805139521468482}
   - component: {fileID: 61581083877024496}
-  - component: {fileID: 114335161269614744}
   m_Layer: 0
   m_Name: Wall1
   m_TagString: Untagged
@@ -30,9 +29,25 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1763157348359298
+--- !u!1 &1717791472396006
 GameObject:
   m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4128848408932856}
+  - component: {fileID: 114086817184536662}
+  m_Layer: 0
+  m_Name: WallHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1763157348359298
+GameObject:
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
@@ -41,7 +56,6 @@ GameObject:
   - component: {fileID: 212754332041661584}
   - component: {fileID: 50636177439994144}
   - component: {fileID: 61924267150268856}
-  - component: {fileID: 114236962825207010}
   m_Layer: 0
   m_Name: Wall2
   m_TagString: Untagged
@@ -65,6 +79,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4128848408932856
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1717791472396006}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4395391805820080}
+  - {fileID: 4223732950606872}
+  m_Father: {fileID: 4237665133094346}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4223732950606872
 Transform:
   m_ObjectHideFlags: 1
@@ -72,10 +101,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1763157348359298}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.2, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 2, z: 1}
   m_Children: []
-  m_Father: {fileID: 4237665133094346}
+  m_Father: {fileID: 4128848408932856}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4237665133094346
@@ -88,8 +117,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4395391805820080}
-  - {fileID: 4223732950606872}
+  - {fileID: 4128848408932856}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -103,7 +131,7 @@ Transform:
   m_LocalPosition: {x: -2.2, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 2, z: 1}
   m_Children: []
-  m_Father: {fileID: 4237665133094346}
+  m_Father: {fileID: 4128848408932856}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &50636177439994144
@@ -196,34 +224,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &114236962825207010
+--- !u!114 &114086817184536662
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1763157348359298}
+  m_GameObject: {fileID: 1717791472396006}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e2d378430fe427db4827ffc570a21ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PositionDelta: {x: -1.7, y: 0, z: 0}
-  MinMovementSpeed: 0.01
-  MaxMovementSpeed: 0.05
-  MinRotationSpeed: 0
-  MaxRotationSpeed: 0
---- !u!114 &114335161269614744
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1335581673552854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e2d378430fe427db4827ffc570a21ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PositionDelta: {x: 1.7, y: 0, z: 0}
+  PositionDelta: {x: 2.2, y: 0, z: 0}
   MinMovementSpeed: 0.01
   MaxMovementSpeed: 0.05
   MinRotationSpeed: 0
@@ -240,7 +252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Difficulty: 3
-  Height: 2
+  MinHeight: 0
 --- !u!212 &212078645984589234
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -68,7 +68,7 @@ Transform:
   m_GameObject: {fileID: 1053707998110778}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.5, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 4164221999550080}
   m_RootOrder: 0
@@ -146,7 +146,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Difficulty: 4
-  Height: 0.5
 --- !u!212 &212590298325443606
 SpriteRenderer:
   m_ObjectHideFlags: 1

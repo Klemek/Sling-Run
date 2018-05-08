@@ -24,7 +24,7 @@ namespace SlingRun
             HighScoreText.text = string.Format(Constants.HIGHSCORE_TEXT, PlayerData.HighScore);
             VersionText.text = Constants.VERSION;
         }
-        
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape)) QuitGame();

@@ -12,7 +12,7 @@ namespace SlingRun
             var center = (p1 + p2) / 2f;
             var tmp = p1 - p2;
             var length = tmp.magnitude;
-            var angle = (float) (Math.Atan2(tmp.y, tmp.x) * (180 / Math.PI));
+            var angle = Mathf.Atan2(tmp.y, tmp.x) * (180 / Mathf.PI);
 
             var obj = Object.Instantiate(defaultSprite, center, Quaternion.identity);
             var renderer = obj.GetComponent<SpriteRenderer>();

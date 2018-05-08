@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SlingRun
 {
@@ -11,22 +9,29 @@ namespace SlingRun
         private Vector3 _mouseStartPos;
 
         private Rigidbody2D _rb2D;
+        private Vector3 _scale;
         private bool _sliding;
         private Vector3 _startPos;
-        private Vector3 _scale;
-        public bool Locked;
-
-
-        public bool Moving;
-        public float SpeedFactor;
 
         public GameObject DefaultSprite;
+        public bool Locked;
+
+        internal bool CanRespawn
+        {
+            get { return Moving && !Locked; }
+        }
+        
+        
+        public bool Moving;
+        public float SpeedFactor;
 
         // Use this for initialization
         private void Start()
         {
             _rb2D = GetComponent<Rigidbody2D>();
             _startPos = _rb2D.position;
+            Moving = false;
+            Locked = false;
         }
 
         // Update is called once per frame
@@ -39,6 +44,7 @@ namespace SlingRun
                     StartCoroutine(CoroutineUtils.Timer(1, Respawn));
                 return;
             }
+
             if (Input.GetMouseButton(0))
             {
                 if (!_mouseLastClicked)
@@ -119,6 +125,7 @@ namespace SlingRun
 
         internal void Release()
         {
+            if (_rb2D == null) return;
             _rb2D.velocity = Vector2.zero;
             Moving = false;
             Locked = false;
@@ -127,10 +134,11 @@ namespace SlingRun
 
         internal void Respawn()
         {
-            if (!Moving || Locked) return;
+            if (!CanRespawn) return;
             Locked = true;
             _scale = transform.localScale;
-            StartCoroutine(CoroutineUtils.SmoothScale(Vector3.zero, Constants.BALL_RESPAWN_TIME, RespawnMiddle, gameObject));
+            StartCoroutine(CoroutineUtils.SmoothScale(Vector3.zero, Constants.BALL_RESPAWN_TIME, RespawnMiddle,
+                gameObject));
         }
 
         private void RespawnMiddle()
@@ -147,6 +155,5 @@ namespace SlingRun
         {
             Locked = false;
         }
-        
     }
 }

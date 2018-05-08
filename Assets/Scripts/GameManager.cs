@@ -12,6 +12,16 @@ namespace SlingRun
         public int Level;
         public int Life;
 
+        internal bool CanRespawn
+        {
+            get
+            {
+                if (_levelManager == null || _levelManager.Ball == null)
+                    return false;
+                return _levelManager.Ball.CanRespawn;
+            }
+        }
+
         private void Awake()
         {
             if (Instance == null)
@@ -59,8 +69,6 @@ namespace SlingRun
         {
             if (Level > PlayerData.HighScore)
                 PlayerData.HighScore = Level;
-            if (Life == 0)
-                UiController.Instance.ShowEndPopup();
         }
 
         internal void Respawn()
@@ -73,7 +81,7 @@ namespace SlingRun
             Life--;
             UiController.Instance.SetLife(Life);
             if (Life == 0)
-                FinishGame();
+                UiController.Instance.ShowEndPopup();
         }
     }
 }

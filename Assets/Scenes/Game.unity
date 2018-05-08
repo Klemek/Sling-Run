@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 139918870}
   - component: {fileID: 139918869}
   m_Layer: 5
-  m_Name: Image
+  m_Name: RespawnButtonImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1386,6 +1386,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Buttons: {fileID: 1405474767}
   EndPopup: {fileID: 324421639}
+  RespawnButton: {fileID: 1454531944}
+  EnabledButtonColor: {r: 1, g: 1, b: 1, a: 1}
+  DisabledButtonColor: {r: 1, g: 1, b: 1, a: 0.5019608}
   HighScoreText: {fileID: 1953389409}
   LevelText: {fileID: 203052386}
   LifeText: {fileID: 2057701115}
@@ -1505,7 +1508,7 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.11764706}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.15686275}
+    m_PressedColor: {r: 1, g: 0, b: 0, a: 0.15686275}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1518,7 +1521,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1454531945}
   m_OnClick:
     m_PersistentCalls:

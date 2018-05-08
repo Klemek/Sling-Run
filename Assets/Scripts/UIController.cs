@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace SlingRun
 {
@@ -11,6 +12,12 @@ namespace SlingRun
         private static UiController _instance;
         public GameObject Buttons;
         public GameObject EndPopup;
+
+        public Button RespawnButton;
+        public Color EnabledButtonColor;
+        public Color DisabledButtonColor;
+
+        private bool _lastCanRespawn = true;
 
         public TextMeshProUGUI HighScoreText;
         public TextMeshProUGUI LevelText;
@@ -27,10 +34,20 @@ namespace SlingRun
                 return _instance;
             }
         }
-
+        
         // Update is called once per frame
         private void Update()
         {
+            if (GameManager.Instance.CanRespawn != _lastCanRespawn)
+            {
+                _lastCanRespawn = GameManager.Instance.CanRespawn;
+                RespawnButton.interactable = _lastCanRespawn;
+
+                StartCoroutine(CoroutineUtils.SmoothColor(_lastCanRespawn ? EnabledButtonColor : DisabledButtonColor,
+                    Constants.UI_ANIMATION_TIME, () => { }, RespawnButton.transform.GetChild(0).GetComponent<Image>()));
+            }
+            
+
             if (!Input.GetKeyDown(KeyCode.Escape)) return;
             if (Paused)
                 Resume();

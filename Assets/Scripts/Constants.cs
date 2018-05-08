@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.6";
+        public const string VERSION = "alpha 1.0.7";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
@@ -26,7 +26,9 @@ namespace SlingRun
         public const string UICONTROLLER_OBJECT_NAME = "Canvas";
 
         public const string NEW_HIGHSCORE_TEXT = "New HighScore !";
-
+        public const float UI_ANIMATION_TIME = 0.25f;
+        
+        
         public const string RESPAWN_TAG = "Respawn";
         public const string FINISH_TAG = "Finish";
 

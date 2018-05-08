@@ -7,11 +7,13 @@ namespace SlingRun
 {
     public class LevelManager : MonoBehaviour
     {
-        
+        private GameObject _currentLevel;
+
         private Vector3 _delta;
         private float _inverseMoveTime;
-        private GameObject _currentLevel;
         private GameObject _nextLevel;
+
+        private int _nextLevelLevel;
         internal PlayerController Ball;
         public PlayerController BallTemplate;
         public GameObject Borders;
@@ -30,15 +32,19 @@ namespace SlingRun
                 _currentLevel = new GameObject("Level 0");
                 Ball = Instantiate(BallTemplate, BallTemplate.transform.position, Quaternion.identity);
                 Instantiate(Borders, Borders.transform.position, Quaternion.identity);
+
+                StartCoroutine(GenerateNextLevel(level + 1));
             }
             else
             {
-                _nextLevel = GenerateLevel(level);
-                _nextLevel.transform.position = _delta;
+                //_nextLevel = GenerateLevel(level);
+                //_nextLevel.transform.position = _delta;
+
+                _nextLevelLevel = level + 1;
 
                 StartCoroutine(CoroutineUtils.SmoothMove(Constants.LEVEL_MOVE_TIME, FinishedMoving,
                     new[] {Ball.gameObject, _currentLevel, _nextLevel},
-                    new [] {GetBallNextPosition(), -_delta, Vector3.zero}));
+                    new[] {GetBallNextPosition(), -_delta, Vector3.zero}));
             }
         }
 
@@ -47,6 +53,15 @@ namespace SlingRun
             Ball.Release();
             Destroy(_currentLevel);
             _currentLevel = _nextLevel;
+
+            StartCoroutine(GenerateNextLevel(_nextLevelLevel));
+        }
+
+        private IEnumerator GenerateNextLevel(int level)
+        {
+            _nextLevel = GenerateLevel(level);
+            _nextLevel.transform.position = _delta;
+            yield return null;
         }
 
         private GameObject GenerateLevel(int level)
@@ -55,19 +70,25 @@ namespace SlingRun
             var r = new Random();
 
             bool valid;
-            int[] frags;
+            var frags = new LevelFragment[0];
             float h;
             do
             {
+                foreach (var f in frags)
+                    Destroy(f.gameObject);
+
                 var nFrag = r.Next(1, Constants.MAX_FRAGMENT_NUMBER + 1);
                 var diff = 0;
-                frags = new int[nFrag];
+
+                frags = new LevelFragment[nFrag];
                 h = 0f;
                 for (var i = 0; i < nFrag; i++)
                 {
-                    frags[i] = r.Next(LevelFragments.Length);
-                    h += LevelFragments[frags[i]].Height;
-                    diff += LevelFragments[frags[i]].Difficulty;
+                    var n = r.Next(LevelFragments.Length);
+                    frags[i] = Instantiate(LevelFragments[n], newLevel.transform);
+                    frags[i].gameObject.SetActive(false);
+                    h += frags[i].Height;
+                    diff += frags[i].Difficulty;
                 }
 
                 if (nFrag > 1)
@@ -81,22 +102,17 @@ namespace SlingRun
 
             foreach (var f in frags)
             {
-                var fh = LevelFragments[f].Height;
+                var fh = f.Height;
 
                 endH += fh;
 
-                var py = NextFloat(r, startH + fh / 2f, endH - fh / 2f);
+                var py = Utils.NextFloat(startH + fh / 2f, endH - fh / 2f);
 
-                var pos = new Vector3(0, py, 0);
+                var frag = f.gameObject;
+                frag.transform.position = new Vector3(0, py, 0);
+                frag.SetActive(true);
 
-                var rotation = Quaternion.identity;
-                if (LevelFragments[f].CanFlip && r.Next(2) == 0) //flip horizontaly
-                    rotation = Quaternion.AngleAxis(180f, Vector3.up);
-
-                var frag = Instantiate(LevelFragments[f].gameObject, pos, rotation);
-                frag.transform.parent = newLevel.transform;
-
-                startH = py + fh / 2 + NextFloat(r, Constants.LEVEL_FRAGMENT_MIN_MARGIN,
+                startH = py + fh / 2 + Utils.NextFloat(Constants.LEVEL_FRAGMENT_MIN_MARGIN,
                              Constants.LEVEL_FRAGMENT_MAX_MARGIN);
                 endH += Constants.LEVEL_FRAGMENT_MAX_MARGIN;
             }
@@ -107,18 +123,13 @@ namespace SlingRun
         private static bool IsDifficultyCorrect(int diff, int level)
         {
             var maxDiff = GetLevelDifficulty(level);
-            var minDiff = Math.Round(maxDiff * (1f - Constants.DIFFICULTY_MAX_MARGIN));
+            var minDiff = Mathf.Round(maxDiff * (1f - Constants.DIFFICULTY_MAX_MARGIN));
             return minDiff <= diff && diff <= maxDiff;
         }
 
         private static int GetLevelDifficulty(int level)
         {
-            return (int) Math.Round(Constants.MAX_DIFFICULTY * (1f - Math.Exp(-Constants.DIFFICULTY_FACTOR * level)));
-        }
-
-        private static float NextFloat(Random r, float min, float max)
-        {
-            return (float) (r.NextDouble() * (max - min) + min);
+            return (int) Mathf.Round(Constants.MAX_DIFFICULTY * (1f - Mathf.Exp(-Constants.DIFFICULTY_FACTOR * level)));
         }
 
         private Vector3 GetBallNextPosition()
