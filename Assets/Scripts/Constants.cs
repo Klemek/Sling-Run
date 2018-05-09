@@ -6,7 +6,7 @@ namespace SlingRun
     {
         #region Global Constants
 
-        public const string VERSION = "alpha 1.0.7";
+        public const string VERSION = "alpha 1.0.8";
 
         public const int MAIN_MENU_SCENE = 0;
         public const int GAME_SCENE = 1;
@@ -27,8 +27,8 @@ namespace SlingRun
 
         public const string NEW_HIGHSCORE_TEXT = "New HighScore !";
         public const float UI_ANIMATION_TIME = 0.25f;
-        
-        
+
+
         public const string RESPAWN_TAG = "Respawn";
         public const string FINISH_TAG = "Finish";
 
@@ -42,15 +42,43 @@ namespace SlingRun
 
         public const float LEVEL_MIN_Y = -1.5f;
         public const float LEVEL_MAX_Y = 4f;
+        public const float LEVEL_MAX_X = 3f;
         public const float LEVEL_FRAGMENT_MIN_MARGIN = 1f;
         public const float LEVEL_FRAGMENT_MAX_MARGIN = 1.5f;
 
         public const int MAX_FRAGMENT_NUMBER = 3;
-        private const int MAX_FRAGMENT_DIFFICULTY = 4;
-        public const int MAX_DIFFICULTY = MAX_FRAGMENT_NUMBER * MAX_FRAGMENT_DIFFICULTY;
-        public const float DIFFICULTY_FACTOR = 0.06f;
+        public const int MAX_MOV_SPEED = 6;
+        public const int MAX_ROT_SPEED = 8;
+
+        public const float MIN_PATH_WIDTH = 1f;
+        private const float MAX_PATH_WIDTH = 5f;
+        public const float MAX_AREA_DIST_BALL = 0.5f;
+        
+        public const int MOV_SPEED_DIFFICULTY = 30;
+        public const int ROT_SPEED_DIFFICULTY = 25;
+        
+        public const float AREA_WIDTH_FACTOR = -0.5f;
+        
+        public static readonly float MIN_DIFFICULTY = (MOV_SPEED_DIFFICULTY + ROT_SPEED_DIFFICULTY) * Mathf.Pow(MAX_PATH_WIDTH, AREA_WIDTH_FACTOR);
+        public static readonly float MAX_DIFFICULTY = MAX_FRAGMENT_NUMBER *
+                                             ((MAX_MOV_SPEED + 1) * MOV_SPEED_DIFFICULTY +
+                                              (MAX_ROT_SPEED + 1) * ROT_SPEED_DIFFICULTY) * Mathf.Pow(MIN_PATH_WIDTH, AREA_WIDTH_FACTOR);
+
+        
+        public const float DIFFICULTY_FACTOR = 0.002f;
         public const float DIFFICULTY_MAX_MARGIN = 0.2f;
 
+        #endregion
+        
+        #region Wall Manager
+        
+        public const float WALL_MIN_M_SPEED = 0.01f;
+        public const float WALL_M_SPEED_FACTOR = 0.015f;
+        public const float WALL_MIN_R_SPEED = 0.3f;
+        public const float WALL_R_SPEED_FACTOR = 1f;
+
+        public const int WALL_PRECISION = 12;
+        
         #endregion
 
         #region Player Controller

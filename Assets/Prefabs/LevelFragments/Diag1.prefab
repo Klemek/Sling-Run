@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212754332041661584}
   - component: {fileID: 50636177439994144}
   - component: {fileID: 61924267150268856}
-  - component: {fileID: 114709545615406182}
+  - component: {fileID: 114447200066945350}
   m_Layer: 0
   m_Name: Wall1
   m_TagString: Untagged
@@ -52,7 +52,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1763157348359298}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 0.5, z: 1}
   m_Children: []
@@ -80,7 +80,7 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1763157348359298}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -118,6 +118,25 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114447200066945350
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1763157348359298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3fd164e6ea449c9ba749e2d9049d623, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Inverted: 0
+  SyncedWalls: []
+  AllowMovement: 1
+  MovementSpeed: 0
+  MinPosition: {x: -2, y: 0, z: 0}
+  MaxPosition: {x: 2, y: 0, z: 0}
+  AllowRotation: 1
+  RotationSpeed: 0
 --- !u!114 &114681868756976048
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -129,23 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e2bc3e4d36486fab30592bb1367390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Difficulty: 2
-  MinHeight: 0
---- !u!114 &114709545615406182
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1763157348359298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be778a77a0b14e0c8042af72c0030385, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MinPosition: {x: -1.5, y: 0, z: 0}
-  MaxPosition: {x: 1.5, y: 0, z: 0}
-  MinRotation: -90
-  MaxRotation: 90
 --- !u!212 &212754332041661584
 SpriteRenderer:
   m_ObjectHideFlags: 1

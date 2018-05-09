@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 namespace SlingRun
 {
@@ -67,35 +69,74 @@ namespace SlingRun
         private GameObject GenerateLevel(int level)
         {
             var newLevel = new GameObject("Level " + level);
-            var r = new Random();
 
-            bool valid;
+            var t0 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+            var reload = true;
             var frags = new LevelFragment[0];
             float h;
-            do
-            {
-                foreach (var f in frags)
-                    Destroy(f.gameObject);
-
-                var nFrag = r.Next(1, Constants.MAX_FRAGMENT_NUMBER + 1);
-                var diff = 0;
-
-                frags = new LevelFragment[nFrag];
-                h = 0f;
-                for (var i = 0; i < nFrag; i++)
+            var nFrag = 0;
+            float diff;
+            float areaWidth;
+            while(true){
+                if (reload)
                 {
-                    var n = r.Next(LevelFragments.Length);
-                    frags[i] = Instantiate(LevelFragments[n], newLevel.transform);
-                    frags[i].gameObject.SetActive(false);
-                    h += frags[i].Height;
-                    diff += frags[i].Difficulty;
+                    foreach (var f in frags)
+                        Destroy(f.gameObject);
+
+                    nFrag = Random.Range(1, Constants.MAX_FRAGMENT_NUMBER + 1);
+                    frags = new LevelFragment[nFrag];
                 }
 
+                var area = new List<Tuple<float, float>>();
+                h = 0f;
+                
+                for (var i = 0; i < nFrag; i++)
+                {
+                    if (reload)
+                    {
+                        var n = Random.Range(0, LevelFragments.Length);
+                        frags[i] = Instantiate(LevelFragments[n], newLevel.transform);
+                        frags[i].gameObject.SetActive(false);
+                    }
+
+                    h += frags[i].Height;
+                    area = Utils.AreaOr(area, frags[i].Area);
+                }
+
+                reload = true;
+                
                 if (nFrag > 1)
                     h += (nFrag - 1) * Constants.LEVEL_FRAGMENT_MAX_MARGIN;
 
-                valid = h <= Constants.LEVEL_MAX_Y - Constants.LEVEL_MIN_Y && IsDifficultyCorrect(diff, level);
-            } while (!valid);
+                if(h > Constants.LEVEL_MAX_Y - Constants.LEVEL_MIN_Y)
+                    continue;
+                
+                area = Utils.AreaNot(-Constants.LEVEL_MAX_X, Constants.LEVEL_MAX_X, area);
+                areaWidth = Utils.AreaWidth(area);
+
+                if (areaWidth < Constants.MIN_PATH_WIDTH)
+                    continue;
+
+                if (Utils.AreaDistance(Ball.transform.position.x, area) > Constants.MAX_AREA_DIST_BALL)
+                    continue;
+                
+                diff = GetDifficulty(frags, areaWidth);
+
+                var maxDiff = GetMaxLevelDifficulty(level);
+                var minDiff = GetMinLevelDifficulty(level);
+                if (diff > maxDiff)
+                    continue;
+
+                reload = false;
+
+                if (diff >= minDiff)
+                    break;
+
+                if (IncreaseDifficulty(frags)) continue;
+                
+                reload = true;
+            }
 
             var endH = Constants.LEVEL_MAX_Y - h;
             var startH = Constants.LEVEL_MIN_Y;
@@ -117,24 +158,56 @@ namespace SlingRun
                 endH += Constants.LEVEL_FRAGMENT_MAX_MARGIN;
             }
 
+            var t1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+                Debug.Log("Finished generating level " + level + "(diff:"+diff+") in " + (t1 - t0) + " ms");
+
             return newLevel;
         }
 
-        private static bool IsDifficultyCorrect(int diff, int level)
+        private static float GetDifficulty(IEnumerable<LevelFragment> frags, float areaWidth)
         {
-            var maxDiff = GetLevelDifficulty(level);
-            var minDiff = Mathf.Round(maxDiff * (1f - Constants.DIFFICULTY_MAX_MARGIN));
-            return minDiff <= diff && diff <= maxDiff;
+            var diff = frags.Sum(frag =>
+                (frag.MovementSpeed + 1) * Constants.MOV_SPEED_DIFFICULTY +
+                (frag.RotationSpeed + 1) * Constants.ROT_SPEED_DIFFICULTY);
+            Debug.Log("areaWidth:"+areaWidth+" diff:"+diff);
+            return Mathf.Pow(areaWidth, Constants.AREA_WIDTH_FACTOR) * diff;
         }
 
-        private static int GetLevelDifficulty(int level)
+        private static bool IncreaseDifficulty(IList<LevelFragment> frags)
         {
-            return (int) Mathf.Round(Constants.MAX_DIFFICULTY * (1f - Mathf.Exp(-Constants.DIFFICULTY_FACTOR * level)));
+            for (var i = 0; i < 10; i++)
+            {
+                var frag = frags[Random.Range(0, frags.Count)];
+                if (Random.Range(0, 2) == 0)
+                {
+                    if (!frag.CanMove || frag.MovementSpeed >= Constants.MAX_MOV_SPEED) continue;
+                    frag.MovementSpeed++;
+                    return true;
+                }
+
+                if (!frag.CanRotate || frag.RotationSpeed >= Constants.MAX_ROT_SPEED) continue;
+                frag.RotationSpeed++;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static float GetMaxLevelDifficulty(int level)
+        {
+            return Constants.MIN_DIFFICULTY + Mathf.Round((Constants.MAX_DIFFICULTY - Constants.MIN_DIFFICULTY) *
+                                                          (1f - Mathf.Exp(-Constants.DIFFICULTY_FACTOR * level)));
+        }
+
+        private static float GetMinLevelDifficulty(int level)
+        {
+            return Mathf.Max(Constants.MIN_DIFFICULTY,GetMaxLevelDifficulty(level) * (1f - Constants.DIFFICULTY_MAX_MARGIN));
         }
 
         private Vector3 GetBallNextPosition()
         {
-            var pos = Ball.gameObject.transform.position - _delta;
+            var pos = Ball.gameObject.transform.localPosition - _delta;
 
             if (pos.x > Constants.BALL_MAX_X)
                 pos.x = Constants.BALL_MAX_X;
