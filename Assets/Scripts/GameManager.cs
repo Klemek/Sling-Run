@@ -1,87 +1,99 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SlingRun
+public class GameManager : MonoBehaviour
 {
-    public class GameManager : MonoBehaviour
+    #region Attributes
+    
+    internal static GameManager Instance;
+    internal int Life;
+
+    private int _level;
+    private LevelManager _levelManager;
+    
+    #endregion
+    
+    #region Members
+    
+    internal bool CanRespawn
     {
-        public static GameManager Instance;
-
-        private LevelManager _levelManager;
-
-        public int Level;
-        public int Life;
-
-        internal bool CanRespawn
+        get
         {
-            get
-            {
-                if (_levelManager == null || _levelManager.Ball == null)
-                    return false;
-                return _levelManager.Ball.CanRespawn;
-            }
-        }
-
-        private void Awake()
-        {
-            if (Instance == null)
-                Instance = this;
-            else if (Instance != this)
-                Destroy(gameObject);
-
-            DontDestroyOnLoad(gameObject);
-
-            _levelManager = GetComponent<LevelManager>();
-        }
-
-        private void OnEnable()
-        {
-            SceneManager.sceneLoaded += OnLevelFinishedLoading;
-        }
-
-        private void OnDisable()
-        {
-            SceneManager.sceneLoaded -= OnLevelFinishedLoading;
-        }
-
-        private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.buildIndex == Constants.GAME_SCENE) StartGame();
-        }
-
-        private void StartGame()
-        {
-            Level = 0;
-            Life = Constants.START_LIFE;
-            _levelManager.LoadLevel(true, Level);
-            UiController.Instance.SetLevel(Level);
-            UiController.Instance.SetLife(Life);
-        }
-
-        internal void NextLevel()
-        {
-            Level++;
-            UiController.Instance.SetLevel(Level);
-            _levelManager.LoadLevel(false, Level);
-        }
-
-        internal void FinishGame()
-        {
-            if (Level > PlayerData.HighScore)
-                PlayerData.HighScore = Level;
-        }
-
-        internal void Respawn()
-        {
-            _levelManager.Ball.Respawn();
-        }
-
-        internal void LooseLife()
-        {
-            Life--;
-            UiController.Instance.SetLife(Life);
-            if (Life == 0)
-                UiController.Instance.ShowEndPopup();
+            if (_levelManager == null || _levelManager.Ball == null)
+                return false;
+            return _levelManager.Ball.CanRespawn;
         }
     }
+    
+    #endregion
+    
+    #region Unity Methods
+
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else if (Instance != this)
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+
+        _levelManager = GetComponent<LevelManager>();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnLevelFinishedLoading;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+    }
+
+    private void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.buildIndex == Constants.GameScene) StartGame();
+    }
+    
+    #endregion
+
+    #region Method
+
+    internal void NextLevel()
+    {
+        _level++;
+        UiController.Instance.SetLevel(_level);
+        _levelManager.LoadLevel(false, _level);
+    }
+
+    internal void FinishGame()
+    {
+        if (_level > PlayerData.HighScore)
+            PlayerData.HighScore = _level;
+    }
+
+    internal void Respawn()
+    {
+        _levelManager.Ball.Respawn();
+    }
+
+    internal void LooseLife()
+    {
+        Life--;
+        UiController.Instance.SetLife(Life);
+        if (Life == 0)
+            UiController.Instance.ShowEndPopup();
+    }
+    
+    private void StartGame()
+    {
+        _level = 0;
+        Life = Constants.StartLife;
+        _levelManager.LoadLevel(true, _level);
+        UiController.Instance.SetLevel(_level);
+        UiController.Instance.SetLife(Life);
+    }
+    
+    #endregion
 }

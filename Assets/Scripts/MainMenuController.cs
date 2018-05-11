@@ -2,32 +2,43 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace SlingRun
+public class MainMenuController : MonoBehaviour
 {
-    public class MainMenuController : MonoBehaviour
+    #region Unity Attributes
+
+    public TextMeshProUGUI HighScoreText;
+    public TextMeshProUGUI VersionText;
+
+    #endregion
+
+    #region Unity Methods
+    
+    private void Start()
     {
-        public TextMeshProUGUI HighScoreText;
-        public TextMeshProUGUI VersionText;
-
-        private void PlayGame()
-        {
-            SceneManager.LoadScene(Constants.GAME_SCENE);
-        }
-
-        private void QuitGame()
-        {
-            Application.Quit();
-        }
-
-        private void Start()
-        {
-            HighScoreText.text = string.Format(Constants.HIGHSCORE_TEXT, PlayerData.HighScore);
-            VersionText.text = Constants.VERSION;
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape)) QuitGame();
-        }
+        HighScoreText.text = string.Format(Constants.HighscoreText, PlayerData.HighScore);
+        VersionText.text = Constants.Version;
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) QuitGame();
+    }
+    
+    #endregion
+    
+    #region Methods
+    
+    public void PlayGame()
+    {
+        SceneManager.LoadScene(Constants.GameScene);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+    
+    #endregion
+
+    
 }

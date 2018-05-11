@@ -1,20 +1,14 @@
 ﻿using UnityEngine;
 
-namespace SlingRun
+public static class PlayerData
 {
-    public static class PlayerData
+    public static int HighScore
     {
-        public static int HighScore
+        get { return !PlayerPrefs.HasKey(Constants.HighscoreKey) ? 0 : PlayerPrefs.GetInt(Constants.HighscoreKey); }
+        set
         {
-            get
-            {
-                return !PlayerPrefs.HasKey(Constants.HIGHSCORE_KEY) ? 0 : PlayerPrefs.GetInt(Constants.HIGHSCORE_KEY);
-            }
-            set
-            {
-                PlayerPrefs.SetInt(Constants.HIGHSCORE_KEY, value);
-                PlayerPrefs.Save();
-            }
+            PlayerPrefs.SetInt(Constants.HighscoreKey, value);
+            PlayerPrefs.Save();
         }
     }
 }

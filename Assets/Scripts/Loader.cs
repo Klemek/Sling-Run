@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
 
-namespace SlingRun
+public class Loader : MonoBehaviour
 {
-    public class Loader : MonoBehaviour
-    {
-        public GameManager GameManager;
+    #region Unity Attributes
+    
+    public GameManager GameManager;
+    
+    #endregion
 
-        private void Awake()
-        {
-            if (GameManager.Instance == null)
-                Instantiate(GameManager);
-        }
+    #region Unity Methods
+    
+    private void Awake()
+    {
+        if (GameManager.Instance == null)
+            Instantiate(GameManager);
     }
+    
+    #endregion
 }

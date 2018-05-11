@@ -1,159 +1,173 @@
 ﻿using UnityEngine;
 
-namespace SlingRun
+public class PlayerController : MonoBehaviour
 {
-    public class PlayerController : MonoBehaviour
+    #region Unity Attributes
+    
+    public GameObject DefaultSprite;
+    public float SpeedFactor;
+    
+    #endregion
+    
+    #region Attributes
+    
+    private GameObject _line;
+    private bool _mouseLastClicked;
+    private Vector3 _mouseStartPos;
+
+    private Rigidbody2D _rb2D;
+    private Vector3 _scale;
+    private bool _sliding;
+    private Vector3 _startPos;
+
+    private bool _locked;
+    private bool _moving;
+    
+    #endregion
+    
+    #region Members
+    
+    internal bool CanRespawn
     {
-        private GameObject _line;
-        private bool _mouseLastClicked;
-        private Vector3 _mouseStartPos;
+        get { return _moving && !_locked; }
+    }
+    
+    #endregion
 
-        private Rigidbody2D _rb2D;
-        private Vector3 _scale;
-        private bool _sliding;
-        private Vector3 _startPos;
+    #region Unity Methods
+    
+    private void Start()
+    {
+        _rb2D = GetComponent<Rigidbody2D>();
+        _startPos = _rb2D.position;
+        _moving = false;
+        _locked = false;
+    }
 
-        public GameObject DefaultSprite;
-        public bool Locked;
-
-        internal bool CanRespawn
+    private void Update()
+    {
+        if (UiController.Paused || _locked) return;
+        if (_moving)
         {
-            get { return Moving && !Locked; }
-        }
-        
-        
-        public bool Moving;
-        public float SpeedFactor;
-
-        // Use this for initialization
-        private void Start()
-        {
-            _rb2D = GetComponent<Rigidbody2D>();
-            _startPos = _rb2D.position;
-            Moving = false;
-            Locked = false;
+            if (_rb2D.velocity.magnitude <= Constants.BallResetSpeed)
+                StartCoroutine(CoroutineUtils.Timer(1, Respawn));
+            return;
         }
 
-        // Update is called once per frame
-        private void Update()
+        if (Input.GetMouseButton(0))
         {
-            if (UiController.Paused || Locked) return;
-            if (Moving)
+            if (!_mouseLastClicked)
             {
-                if (_rb2D.velocity.magnitude <= Constants.BALL_RESET_SPEED)
-                    StartCoroutine(CoroutineUtils.Timer(1, Respawn));
-                return;
+                var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                if ((mousePos - Constants.MousePosDepth - transform.position).magnitude <
+                    Constants.BallTouchSize)
+                {
+                    _mouseStartPos = mousePos;
+                    _sliding = true;
+                }
             }
 
-            if (Input.GetMouseButton(0))
+            if (_sliding)
             {
-                if (!_mouseLastClicked)
-                {
-                    var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                var delta = Camera.main.ScreenToWorldPoint(Input.mousePosition) - _mouseStartPos;
 
-                    if ((mousePos - Constants.MOUSE_POS_DEPTH - transform.position).magnitude <
-                        Constants.BALL_TOUCH_SIZE)
-                    {
-                        _mouseStartPos = mousePos;
-                        _sliding = true;
-                    }
-                }
+                if (delta.magnitude > Constants.BallMaxMagnitude)
+                    delta = delta.normalized * Constants.BallMaxMagnitude;
 
-                if (_sliding)
-                {
-                    var delta = Camera.main.ScreenToWorldPoint(Input.mousePosition) - _mouseStartPos;
+                if (delta.y > 0)
+                    delta.y = 0;
 
-                    if (delta.magnitude > Constants.BALL_MAX_MAGNITUDE)
-                        delta = delta.normalized * Constants.BALL_MAX_MAGNITUDE;
+                _rb2D.position = _startPos + delta;
 
-                    if (delta.y > 0)
-                        delta.y = 0;
-
-                    _rb2D.position = _startPos + delta;
-
-                    if (_line != null)
-                        Destroy(_line);
-                    _line = LineFactory.CreateDashedLine(DefaultSprite,
-                        _startPos + delta + Constants.PREDICT_LINE_DEPTH,
-                        _startPos - delta + Constants.PREDICT_LINE_DEPTH,
-                        Constants.PREDICT_LINE_COLOR, Constants.PREDICT_LINE_THICKNESS,
-                        Constants.PREDICT_LINE_DASH_LENGTH);
-                }
-
-                _mouseLastClicked = true;
-            }
-            else
-            {
-                if (_mouseLastClicked)
-                {
-                    var force = (_startPos - (Vector3) _rb2D.position) * SpeedFactor;
-
+                if (_line != null)
                     Destroy(_line);
+                _line = LineFactory.CreateDashedLine(DefaultSprite,
+                    _startPos + delta + Constants.PredictLineDepth,
+                    _startPos - delta + Constants.PredictLineDepth,
+                    Constants.PredictLineColor, Constants.PredictLineThickness,
+                    Constants.PredictLineDashLength);
+            }
 
-                    if (force.magnitude >= Constants.BALL_MIN_SPEED)
-                    {
-                        _rb2D.velocity = force;
-                        Moving = true;
-                    }
-                    else
-                    {
-                        _rb2D.position = _startPos;
-                    }
+            _mouseLastClicked = true;
+        }
+        else
+        {
+            if (_mouseLastClicked)
+            {
+                var force = (_startPos - (Vector3) _rb2D.position) * SpeedFactor;
 
-                    _sliding = false;
+                Destroy(_line);
+
+                if (force.magnitude >= Constants.BallMinSpeed)
+                {
+                    _rb2D.velocity = force;
+                    _moving = true;
+                }
+                else
+                {
+                    _rb2D.position = _startPos;
                 }
 
-                _mouseLastClicked = false;
+                _sliding = false;
             }
-        }
 
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (Locked || UiController.Paused) return;
-            if (collision.gameObject.CompareTag(Constants.RESPAWN_TAG))
-            {
-                Respawn();
-            }
-            else if (collision.gameObject.CompareTag(Constants.FINISH_TAG))
-            {
-                GameManager.Instance.NextLevel();
-                _rb2D.velocity = Vector2.zero;
-                Moving = false;
-                Locked = true;
-            }
-        }
-
-        internal void Release()
-        {
-            if (_rb2D == null) return;
-            _rb2D.velocity = Vector2.zero;
-            Moving = false;
-            Locked = false;
-            _startPos = _rb2D.position;
-        }
-
-        internal void Respawn()
-        {
-            if (!CanRespawn) return;
-            Locked = true;
-            _scale = transform.localScale;
-            StartCoroutine(CoroutineUtils.SmoothScale(Vector3.zero, Constants.BALL_RESPAWN_TIME, RespawnMiddle,
-                gameObject));
-        }
-
-        private void RespawnMiddle()
-        {
-            transform.position = _startPos;
-            _rb2D.velocity = Vector2.zero;
-            Moving = false;
-            GameManager.Instance.LooseLife();
-            if (GameManager.Instance.Life > 0)
-                StartCoroutine(CoroutineUtils.SmoothScale(_scale, Constants.BALL_RESPAWN_TIME, RespawnEnd, gameObject));
-        }
-
-        private void RespawnEnd()
-        {
-            Locked = false;
+            _mouseLastClicked = false;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (_locked || UiController.Paused) return;
+        if (collision.gameObject.CompareTag(Constants.RespawnTag))
+        {
+            Respawn();
+        }
+        else if (collision.gameObject.CompareTag(Constants.FinishTag))
+        {
+            GameManager.Instance.NextLevel();
+            _rb2D.velocity = Vector2.zero;
+            _moving = false;
+            _locked = true;
+        }
+    }
+    
+    #endregion
+
+    #region Methods
+    
+    internal void Release()
+    {
+        if (_rb2D == null) return;
+        _rb2D.velocity = Vector2.zero;
+        _moving = false;
+        _locked = false;
+        _startPos = _rb2D.position;
+    }
+
+    internal void Respawn()
+    {
+        if (!CanRespawn) return;
+        _locked = true;
+        _scale = transform.localScale;
+        StartCoroutine(CoroutineUtils.SmoothScale(Vector3.zero, Constants.BallRespawnTime, RespawnMiddle,
+            gameObject));
+    }
+
+    private void RespawnMiddle()
+    {
+        transform.position = _startPos;
+        _rb2D.velocity = Vector2.zero;
+        _moving = false;
+        GameManager.Instance.LooseLife();
+        if (GameManager.Instance.Life > 0)
+            StartCoroutine(CoroutineUtils.SmoothScale(_scale, Constants.BallRespawnTime, RespawnEnd, gameObject));
+    }
+
+    private void RespawnEnd()
+    {
+        _locked = false;
+    }
+    
+    #endregion
 }

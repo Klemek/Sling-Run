@@ -2,12 +2,17 @@
 
 public class CameraAspectRatio : MonoBehaviour
 {
-    public Vector2 ratio;
+    #region Unity Attributes
+    
+    public Vector2 Ratio;
+    
+    #endregion
 
-    // Use this for initialization
+    #region Unity Methods
+    
     private void Start()
     {
-        var expectedRatio = ratio.x / ratio.y;
+        var expectedRatio = Ratio.x / Ratio.y;
         var mainCamera = GetComponent<Camera>();
         var currentRatio = mainCamera.scaledPixelWidth / (float) mainCamera.scaledPixelHeight;
         var rect = mainCamera.rect;
@@ -24,4 +29,6 @@ public class CameraAspectRatio : MonoBehaviour
 
         mainCamera.rect = rect;
     }
+    
+    #endregion
 }

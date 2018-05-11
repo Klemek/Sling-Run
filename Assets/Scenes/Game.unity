@@ -2792,7 +2792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1aa4ebf07f11c34ea7be365baf730f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ratio: {x: 9, y: 16}
+  Ratio: {x: 9, y: 16}
 --- !u!224 &2024512886
 RectTransform:
   m_ObjectHideFlags: 0
