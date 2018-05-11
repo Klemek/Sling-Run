@@ -52,8 +52,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8b636b72344821b414d93627ff92d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 0
-  Life: 0
 --- !u!114 &114801332297913180
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -87,3 +85,8 @@ MonoBehaviour:
   - {fileID: 114681868756976048, guid: 7454a513becd9af40a9159108568e4e9, type: 2}
   - {fileID: 114681868756976048, guid: e2cc5118cee99be44923fda06936a494, type: 2}
   - {fileID: 114681868756976048, guid: a4194efebd3630945afe3a313434e80c, type: 2}
+  WallMaterials:
+  - {fileID: 6200000, guid: 9cf7aec13cbdb1347b2124818d4bc12b, type: 2}
+  - {fileID: 6200000, guid: 9cf7aec13cbdb1347b2124818d4bc12b, type: 2}
+  - {fileID: 6200000, guid: 41afefe298ce169409a79c3cba9350e6, type: 2}
+  - {fileID: 6200000, guid: 1711a71304939af45bcf8f11378e7728, type: 2}

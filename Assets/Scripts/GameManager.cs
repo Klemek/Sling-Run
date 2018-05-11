@@ -3,9 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    #region Attributes
+    #region Static Attributes
     
     internal static GameManager Instance;
+    
+    #endregion
+    
+    #region Attributes
+
     internal int Life;
 
     private int _level;

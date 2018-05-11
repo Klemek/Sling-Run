@@ -8,23 +8,24 @@ using Random = UnityEngine.Random;
 public class LevelManager : MonoBehaviour
 {
     #region Unity Attributes
-    
+
     public PlayerController BallTemplate;
     public GameObject Borders;
     public LevelFragment[] LevelFragments;
-    
+    public PhysicsMaterial2D[] WallMaterials;
+
     #endregion
-    
+
     #region Attributes
 
     internal PlayerController Ball;
-    
+
     private GameObject _currentLevel;
     private int _nextLevelLevel;
     private GameObject _nextLevel;
-    
+
     private Vector3 _delta;
-    
+
     #endregion
 
     #region Unity Methods
@@ -32,6 +33,7 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         _delta = new Vector3(0, Constants.LevelHeight, 0);
+        WallManager.WallMaterials = WallMaterials;
     }
 
     #endregion
@@ -195,10 +197,9 @@ public class LevelManager : MonoBehaviour
 
     private static float GetDifficulty(IEnumerable<LevelFragment> frags, float areaWidth)
     {
-        var diff = frags.Sum(frag =>
-            (frag.MovementSpeed + 1) * Constants.MovSpeedDifficulty +
-            (frag.RotationSpeed + 1) * Constants.RotSpeedDifficulty);
-        Debug.Log("areaWidth:" + areaWidth + " diff:" + diff);
+        var diff = frags.Sum(frag => Constants.WallDifficulties[frag.WallType] *
+                                     (frag.MovementSpeed + 1) * Constants.MovSpeedDifficulty +
+                                     (frag.RotationSpeed + 1) * Constants.RotSpeedDifficulty);
         return Mathf.Pow(areaWidth, Constants.AreaWidthFactor) * diff;
     }
 
@@ -207,16 +208,21 @@ public class LevelManager : MonoBehaviour
         for (var i = 0; i < 10; i++)
         {
             var frag = frags[Utils.RandInt(frags.Count)];
-            if (Utils.RandBool())
+            switch (Utils.RandInt(3))
             {
-                if (!frag.CanMove || frag.MovementSpeed >= Constants.MaxMovSpeed) continue;
-                frag.MovementSpeed++;
-                return true;
+                default:
+                    if (!frag.CanMove || frag.MovementSpeed >= Constants.MaxMovSpeed) continue;
+                    frag.MovementSpeed++;
+                    return true;
+                case 1:
+                    if (!frag.CanRotate || frag.RotationSpeed >= Constants.MaxRotSpeed) continue;
+                    frag.RotationSpeed++;
+                    return true;
+                case 2:
+                    if ((int) frag.WallType == Enum.GetValues(typeof(WallType)).Length - 1) continue;
+                    frag.WallType++;
+                    return true;
             }
-
-            if (!frag.CanRotate || frag.RotationSpeed >= Constants.MaxRotSpeed) continue;
-            frag.RotationSpeed++;
-            return true;
         }
 
         return false;

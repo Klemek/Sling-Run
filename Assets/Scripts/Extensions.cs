@@ -4,7 +4,7 @@ public static class Extensions
 {
     #region String
 
-    private static Color ToColor(this string hex)
+    public static Color ToColor(this string hex)
     {
         Color output;
         ColorUtility.TryParseHtmlString(hex, out output);
@@ -17,7 +17,7 @@ public static class Extensions
 
     public static Color ToColor(this uint hex)
     {
-        return hex.ToString("X").ToColor();
+        return ("#"+hex.ToString("X")).ToColor();
     }
 
     #endregion

@@ -57,6 +57,16 @@ public class LevelFragment : MonoBehaviour
         }
     }
 
+    internal WallType WallType
+    {
+        get { return Walls.First().Type; }
+        set
+        {
+            foreach (var wall in Walls)
+                wall.Type = value;
+        }
+    }
+    
     internal IEnumerable<Tuple<float, float>> Area
     {
         get

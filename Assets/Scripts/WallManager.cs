@@ -8,6 +8,12 @@ public class WallManager : MonoBehaviour
 
     #endregion
     
+    #region Static Attributes
+    
+    internal static PhysicsMaterial2D[] WallMaterials;
+    
+    #endregion
+    
     #region Attributes
 
     protected internal bool CanMove;
@@ -23,7 +29,9 @@ public class WallManager : MonoBehaviour
     protected internal bool CanRotate;
     protected internal float RotSpeed;
     protected internal float Rotation;
+    
     private Rect? _bounds;
+    private WallType _type;
 
     #endregion
 
@@ -39,6 +47,21 @@ public class WallManager : MonoBehaviour
         }
     }
 
+    internal WallType Type
+    {
+        get { return _type; }
+        set
+        {
+            _type = value;
+            var rb2D = GetComponent<Rigidbody2D>();
+            var sprite = GetComponent<SpriteRenderer>();
+            if (rb2D == null || sprite == null) return;
+            rb2D.sharedMaterial = WallMaterials[(int)_type];
+            sprite.color = Constants.WallColors[_type];
+            tag = Constants.WallTags[_type];
+        }
+    }
+    
     private bool Moving
     {
         get { return CanMove && Mathf.Abs(MovSpeed) > float.Epsilon; }
@@ -53,6 +76,12 @@ public class WallManager : MonoBehaviour
 
     #region Unity Methods
 
+    private void Start()
+    {
+        if (CompareTag(Constants.DefaultTag))
+            Type = WallType.Default;
+    }
+    
     private void Update()
     {
         if (Moving)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class Constants
@@ -30,12 +31,48 @@ public static class Constants
 
     #region Tags
 
+    public const string DefaultTag = "Untagged";
     public const string RespawnTag = "Respawn";
     public const string FinishTag = "Finish";
 
     #endregion
 
     public const int StartLife = 5;
+
+    #region Wall Manager
+
+    public const float WallMinMSpeed = 0.01f;
+    public const float WallMSpeedFactor = 0.015f;
+    public const float WallMinRSpeed = 0.3f;
+    public const float WallRSpeedFactor = 1f;
+
+    public const int WallPrecision = 12;
+
+    public static readonly Dictionary<WallType, string> WallTags = new Dictionary<WallType, string>
+    {
+        {WallType.Default, "DefaultWall"},
+        {WallType.Breakable, "BreakableWall"},
+        {WallType.Bouncing, "BouncingWall"},
+        {WallType.Sticky, "StickyWall"}
+    };
+
+    public static readonly Dictionary<WallType, Color> WallColors = new Dictionary<WallType, Color>
+    {
+        {WallType.Default, Color.white},
+        {WallType.Breakable, "#A1887F".ToColor()},
+        {WallType.Bouncing, "#4DB6AC".ToColor()},
+        {WallType.Sticky, "#FFB74D".ToColor()}
+    };
+
+    public static readonly Dictionary<WallType, float> WallDifficulties = new Dictionary<WallType, float>
+    {
+        {WallType.Default, 1f},
+        {WallType.Breakable, 1.1f},
+        {WallType.Bouncing, 1.3f},
+        {WallType.Sticky, 1.5f}
+    };
+
+    #endregion
 
     #region Level Manager
 
@@ -62,10 +99,11 @@ public static class Constants
 
     public const float AreaWidthFactor = -0.5f;
 
-    public static readonly float MinDifficulty =
-        (MovSpeedDifficulty + RotSpeedDifficulty) * Mathf.Pow(MaxPathWidth, AreaWidthFactor);
+    public static readonly float MinDifficulty =  WallDifficulties.Min(o => o.Value) *
+                                                 (MovSpeedDifficulty + RotSpeedDifficulty) *
+                                                 Mathf.Pow(MaxPathWidth, AreaWidthFactor);
 
-    public static readonly float MaxDifficulty = MaxFragmentNumber *
+    public static readonly float MaxDifficulty = WallDifficulties.Max(o => o.Value) * MaxFragmentNumber *
                                                  ((MaxMovSpeed + 1) * MovSpeedDifficulty +
                                                   (MaxRotSpeed + 1) * RotSpeedDifficulty) *
                                                  Mathf.Pow(MinPathWidth, AreaWidthFactor);
@@ -73,41 +111,6 @@ public static class Constants
 
     public const float DifficultyFactor = 0.002f;
     public const float DifficultyMaxMargin = 0.2f;
-
-    #endregion
-
-    #region Wall Manager
-
-    public const float WallMinMSpeed = 0.01f;
-    public const float WallMSpeedFactor = 0.015f;
-    public const float WallMinRSpeed = 0.3f;
-    public const float WallRSpeedFactor = 1f;
-
-    public const int WallPrecision = 12;
-
-    public enum WallType
-    {
-        Default = 0,
-        Breakable = 1,
-        Bouncing = 2,
-        Sticky = 3
-    }
-
-    public static readonly Dictionary<WallType, string> WallTags = new Dictionary<WallType, string>
-    {
-        {WallType.Default, "DefaultWall"},
-        {WallType.Breakable, "BreakableWall"},
-        {WallType.Bouncing, "BouncingWall"},
-        {WallType.Sticky, "StickyWall"}
-    };
-
-    public static readonly Dictionary<WallType, Color> WallColors = new Dictionary<WallType, Color>
-    {
-        {WallType.Default, Color.white},
-        {WallType.Breakable, 0xFFAB91FF.ToColor()},
-        {WallType.Bouncing, 0x81D4FAFF.ToColor()},
-        {WallType.Sticky, 0xC5E1A5FF.ToColor()}
-    };
 
     #endregion
 
