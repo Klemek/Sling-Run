@@ -13,11 +13,14 @@ A small mobile game made with Unity
 * [x] ~~*UI* : HighScore~~
 * [x] ~~*Engine & UI* : life, respawn and end of game~~
 * [x] ~~*Engine* : Level generation~~
-* [ ] ***Engine* : More levels (moving, rotating, sticky, breakable, ...)**
+* [x] ~~*Engine* : More levels (moving, rotating, sticky, breakable, ...)*~~
+* [ ] ***Basic UI* : Simple tutorial** 
 * [ ] *Engine & UI* : Money
 * [ ] *Engine* : Loot generation (Money / Lives)
 * [ ] *Engine* : More balls (stats, skin)
 * [ ] *UI* : Ball unlock with money
+* [ ] *Engine* : Sounds
+* [ ] *Engine* : Music
 * [ ] *Engine & UI* : Levels style and variations
 * [ ] *Engine & UI* : Ads to recover a life or get more money
 
