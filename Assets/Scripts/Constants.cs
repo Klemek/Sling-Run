@@ -6,7 +6,7 @@ public static class Constants
 {
     #region Global Constants
 
-    public const string Version = "alpha 1.0.9";
+    public const string Version = "alpha 1.0.10";
 
     public const int MainMenuScene = 0;
     public const int GameScene = 1;
@@ -53,7 +53,8 @@ public static class Constants
         {WallType.Default, "DefaultWall"},
         {WallType.Breakable, "BreakableWall"},
         {WallType.Bouncing, "BouncingWall"},
-        {WallType.Sticky, "StickyWall"}
+        {WallType.Sticky, "StickyWall"},
+        {WallType.Deadly, "DeadlyWall"}
     };
 
     public static readonly Dictionary<WallType, Color> WallColors = new Dictionary<WallType, Color>
@@ -61,7 +62,8 @@ public static class Constants
         {WallType.Default, Color.white},
         {WallType.Breakable, "#A1887F".ToColor()},
         {WallType.Bouncing, "#4DB6AC".ToColor()},
-        {WallType.Sticky, "#FFB74D".ToColor()}
+        {WallType.Sticky, "#FFB74D".ToColor()},
+        {WallType.Deadly, "#E57373".ToColor()}
     };
 
     public static readonly Dictionary<WallType, float> WallDifficulties = new Dictionary<WallType, float>
@@ -69,7 +71,8 @@ public static class Constants
         {WallType.Default, 1f},
         {WallType.Breakable, 1.1f},
         {WallType.Bouncing, 1.3f},
-        {WallType.Sticky, 1.5f}
+        {WallType.Sticky, 1.5f},
+        {WallType.Deadly, 2.5f}
     };
 
     #endregion

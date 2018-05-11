@@ -12,16 +12,7 @@ public static class Extensions
     }
 
     #endregion
-
-    #region Int
-
-    public static Color ToColor(this uint hex)
-    {
-        return ("#"+hex.ToString("X")).ToColor();
-    }
-
-    #endregion
-
+    
     #region Color
 
     internal static Vector4 ToVector4(this Color c1)

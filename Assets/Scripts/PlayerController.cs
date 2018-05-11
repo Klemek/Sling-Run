@@ -123,6 +123,11 @@ public class PlayerController : MonoBehaviour
         {
             collision.gameObject.SetActive(false);
         }
+        else if (collision.gameObject.CompareTag(Constants.WallTags[WallType.Deadly]))
+        {
+            _rb2D.velocity = Vector2.zero;
+            Respawn();
+        }
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
@@ -130,6 +135,7 @@ public class PlayerController : MonoBehaviour
         if (_locked || UiController.Paused) return;
         if (collision.gameObject.CompareTag(Constants.RespawnTag))
         {
+            _rb2D.velocity = Vector2.zero;
             Respawn();
         }
         else if (collision.gameObject.CompareTag(Constants.FinishTag))
