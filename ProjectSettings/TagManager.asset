@@ -9,6 +9,10 @@ TagManager:
   - BouncingWall
   - StickyWall
   - DeadlyWall
+  - CooperCoin
+  - SilverCoin
+  - GoldCoin
+  - Heart
   layers:
   - Default
   - TransparentFX

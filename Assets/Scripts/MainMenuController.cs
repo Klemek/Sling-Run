@@ -7,6 +7,7 @@ public class MainMenuController : MonoBehaviour
     #region Unity Attributes
 
     public TextMeshProUGUI HighScoreText;
+    public TextMeshProUGUI MoneyText;
     public TextMeshProUGUI VersionText;
 
     #endregion
@@ -17,6 +18,7 @@ public class MainMenuController : MonoBehaviour
     {
         HighScoreText.text = string.Format(Constants.HighscoreText, PlayerData.HighScore);
         VersionText.text = Constants.Version;
+        MoneyText.text = PlayerData.Money.ToString();
     }
 
     private void Update()

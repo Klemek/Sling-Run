@@ -13,6 +13,7 @@ public class LevelManager : MonoBehaviour
     public GameObject Borders;
     public LevelFragment[] LevelFragments;
     public PhysicsMaterial2D[] WallMaterials;
+    public GameObject[] Pickups;
 
     #endregion
 
@@ -90,6 +91,9 @@ public class LevelManager : MonoBehaviour
         float h;
         var nFrag = 0;
         float diff;
+        float areaWidth;
+        var maxDiff = GetMaxLevelDifficulty(level);
+        var minDiff = GetMinLevelDifficulty(level);
         while (true)
         {
             if (reload)
@@ -126,7 +130,7 @@ public class LevelManager : MonoBehaviour
                 continue;
 
             area = Utils.AreaNot(-Constants.LevelMaxX, Constants.LevelMaxX, area);
-            var areaWidth = Utils.AreaWidth(area);
+            areaWidth = Utils.AreaWidth(area);
 
             if (areaWidth < Constants.MinPathWidth)
                 continue;
@@ -136,8 +140,6 @@ public class LevelManager : MonoBehaviour
 
             diff = GetDifficulty(frags, areaWidth);
 
-            var maxDiff = GetMaxLevelDifficulty(level);
-            var minDiff = GetMinLevelDifficulty(level);
             if (diff > maxDiff)
                 continue;
 
@@ -173,7 +175,27 @@ public class LevelManager : MonoBehaviour
 
         var t1 = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-        Debug.Log("Finished generating level " + level + "(diff:" + diff + ") in " + (t1 - t0) + " ms");
+        var debugLog = "";
+
+        debugLog += String.Format("Finished generating level {0:d} ({1:f}<diff:{2:f}<{3:f}) in {4:d} ms\n", level,
+            minDiff, diff, maxDiff, t1 - t0);
+        debugLog += "|Area width:" + areaWidth + "\n";
+
+        for (var k = 0; k < frags.Length; k++)
+        {
+            var frag = frags[k];
+            var fdiff = Constants.WallDifficulties[frag.WallType] *
+                        (frag.MovementSpeed + 1) * Constants.MovSpeedDifficulty +
+                        (frag.RotationSpeed + 1) * Constants.RotSpeedDifficulty;
+            debugLog += "|Fragment " + k + " (diff:" + fdiff + ")\n";
+            debugLog += "||Type:" + frag.WallType + " => " + Constants.WallDifficulties[frag.WallType] + "\n";
+            debugLog += "||Movement:" + frag.MovementSpeed + " => " +
+                        (frag.MovementSpeed + 1) * Constants.MovSpeedDifficulty + "\n";
+            debugLog += "||Rotation:" + frag.RotationSpeed + " => " +
+                        (frag.RotationSpeed + 1) * Constants.RotSpeedDifficulty + "\n";
+        }
+
+        Debug.Log(debugLog);
 
         return newLevel;
     }

@@ -17,7 +17,8 @@ public class UiController : MonoBehaviour
     public TextMeshProUGUI HighScoreText;
     public TextMeshProUGUI LevelText;
     public TextMeshProUGUI LifeText;
-
+    public TextMeshProUGUI MoneyText;
+    
     public GameObject PauseMenu;
     
     #endregion
@@ -125,6 +126,11 @@ public class UiController : MonoBehaviour
     internal void SetLife(int life)
     {
         LifeText.text = life.ToString();
+    }
+    
+    internal void SetMoney(int money)
+    {
+        MoneyText.text = money.ToString();
     }
 
     internal void ShowEndPopup()

@@ -6,13 +6,14 @@ public static class Constants
 {
     #region Global Constants
 
-    public const string Version = "alpha 1.0.10";
+    public const string Version = "alpha 1.0.11";
 
     public const int MainMenuScene = 0;
     public const int GameScene = 1;
 
     public const string HighscoreKey = "highscore";
-
+    public const string MoneyKey = "money";
+    
     public const string HighscoreText = "HighScore : {0:d}";
 
     #endregion
@@ -35,7 +36,22 @@ public static class Constants
     public const string RespawnTag = "Respawn";
     public const string FinishTag = "Finish";
 
+    public const string HeartTag = "Heart";
+    public const string CooperCoinTag = "CooperCoin";
+    public const string SilverCoinTag = "SilverCoin";
+    public const string GoldCoinTag = "GoldCoin";
+
+    public const string DefaultWallTag = "DefaultWall";
+    public const string BreakableWallTag = "BreakableWall";
+    public const string BouncingWallTag = "BouncingWall";
+    public const string StickyWallTag = "StickyWall";
+    public const string DeadlyWallTag = "DeadlyWall";
+
     #endregion
+
+    public const int CooperCoinValue = 1;
+    public const int SilverCoinValue = 5;
+    public const int GoldCoinValue = 20;
 
     public const int StartLife = 5;
 
@@ -50,11 +66,11 @@ public static class Constants
 
     public static readonly Dictionary<WallType, string> WallTags = new Dictionary<WallType, string>
     {
-        {WallType.Default, "DefaultWall"},
-        {WallType.Breakable, "BreakableWall"},
-        {WallType.Bouncing, "BouncingWall"},
-        {WallType.Sticky, "StickyWall"},
-        {WallType.Deadly, "DeadlyWall"}
+        {WallType.Default, DefaultWallTag},
+        {WallType.Breakable, BreakableWallTag},
+        {WallType.Bouncing, BouncingWallTag},
+        {WallType.Sticky, StickyWallTag},
+        {WallType.Deadly, DeadlyWallTag}
     };
 
     public static readonly Dictionary<WallType, Color> WallColors = new Dictionary<WallType, Color>
@@ -112,7 +128,7 @@ public static class Constants
                                                  Mathf.Pow(MinPathWidth, AreaWidthFactor);
 
 
-    public const float DifficultyFactor = 0.002f;
+    public const float DifficultyFactor = 0.001f;
     public const float DifficultyMaxMargin = 0.2f;
 
     #endregion

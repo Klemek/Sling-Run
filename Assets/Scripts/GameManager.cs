@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     
     #region Attributes
 
-    internal int Life;
+    private int _life;
 
     private int _level;
     private LevelManager _levelManager;
@@ -19,6 +19,28 @@ public class GameManager : MonoBehaviour
     #endregion
     
     #region Members
+
+    internal int Life
+    {
+        get { return _life; }
+        set
+        {
+            _life = value;
+            UiController.Instance.SetLife(_life);
+            if (_life == 0)
+                UiController.Instance.ShowEndPopup();
+        }
+    }
+
+    internal int Money
+    {
+        get { return PlayerData.Money; }
+        set
+        {
+            PlayerData.Money = value;
+            UiController.Instance.SetMoney(value);
+        }
+    }
     
     internal bool CanRespawn
     {
@@ -82,14 +104,6 @@ public class GameManager : MonoBehaviour
     {
         _levelManager.Ball.Respawn();
     }
-
-    internal void LooseLife()
-    {
-        Life--;
-        UiController.Instance.SetLife(Life);
-        if (Life == 0)
-            UiController.Instance.ShowEndPopup();
-    }
     
     private void StartGame()
     {
@@ -97,7 +111,7 @@ public class GameManager : MonoBehaviour
         Life = Constants.StartLife;
         _levelManager.LoadLevel(true, _level);
         UiController.Instance.SetLevel(_level);
-        UiController.Instance.SetLife(Life);
+        UiController.Instance.SetMoney(PlayerData.Money);
     }
     
     #endregion

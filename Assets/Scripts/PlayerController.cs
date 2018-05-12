@@ -3,14 +3,14 @@
 public class PlayerController : MonoBehaviour
 {
     #region Unity Attributes
-    
+
     public GameObject DefaultSprite;
     public float SpeedFactor;
-    
+
     #endregion
-    
+
     #region Attributes
-    
+
     private GameObject _line;
     private bool _mouseLastClicked;
     private Vector3 _mouseStartPos;
@@ -22,20 +22,20 @@ public class PlayerController : MonoBehaviour
 
     private bool _locked;
     private bool _moving;
-    
+
     #endregion
-    
+
     #region Members
-    
+
     internal bool CanRespawn
     {
         get { return _moving && !_locked; }
     }
-    
+
     #endregion
 
     #region Unity Methods
-    
+
     private void Start()
     {
         _rb2D = GetComponent<Rigidbody2D>();
@@ -119,38 +119,61 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (_locked || UiController.Paused) return;
-        if (collision.gameObject.CompareTag(Constants.WallTags[WallType.Breakable]))
+        switch (collision.gameObject.tag)
         {
-            collision.gameObject.SetActive(false);
-        }
-        else if (collision.gameObject.CompareTag(Constants.WallTags[WallType.Deadly]))
-        {
-            _rb2D.velocity = Vector2.zero;
-            Respawn();
+            case Constants.BreakableWallTag:
+                collision.gameObject.SetActive(false);
+                return;
+            case Constants.DeadlyWallTag:
+                _rb2D.velocity = Vector2.zero;
+                Respawn();
+                return;
+            default:
+                return;
         }
     }
-    
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (_locked || UiController.Paused) return;
-        if (collision.gameObject.CompareTag(Constants.RespawnTag))
+        switch (collision.gameObject.tag)
         {
-            _rb2D.velocity = Vector2.zero;
-            Respawn();
-        }
-        else if (collision.gameObject.CompareTag(Constants.FinishTag))
-        {
-            GameManager.Instance.NextLevel();
-            _rb2D.velocity = Vector2.zero;
-            _moving = false;
-            _locked = true;
+            case Constants.RespawnTag:
+                _rb2D.velocity = Vector2.zero;
+                Respawn();
+                return;
+            case Constants.FinishTag:
+                GameManager.Instance.NextLevel();
+                _rb2D.velocity = Vector2.zero;
+                _moving = false;
+                _locked = true;
+                return;
+            case Constants.HeartTag:
+                GameManager.Instance.Life++;
+                collision.gameObject.SetActive(false);
+                return;
+            case Constants.CooperCoinTag:
+                GameManager.Instance.Money += Constants.CooperCoinValue;
+                collision.gameObject.SetActive(false);
+                return;
+            case Constants.SilverCoinTag:
+                GameManager.Instance.Money += Constants.SilverCoinValue;
+                collision.gameObject.SetActive(false);
+                return;
+            case Constants.GoldCoinTag:
+                GameManager.Instance.Money += Constants.GoldCoinValue;
+                collision.gameObject.SetActive(false);
+                return;
+            default:
+                Debug.Log("Unhandled Trigger collision : '" + collision.gameObject.tag + "'");
+                return;
         }
     }
-    
+
     #endregion
 
     #region Methods
-    
+
     internal void Release()
     {
         if (_rb2D == null) return;
@@ -174,7 +197,7 @@ public class PlayerController : MonoBehaviour
         transform.position = _startPos;
         _rb2D.velocity = Vector2.zero;
         _moving = false;
-        GameManager.Instance.LooseLife();
+        GameManager.Instance.Life--;
         if (GameManager.Instance.Life > 0)
             StartCoroutine(CoroutineUtils.SmoothScale(_scale, Constants.BallRespawnTime, RespawnEnd, gameObject));
     }
@@ -183,6 +206,6 @@ public class PlayerController : MonoBehaviour
     {
         _locked = false;
     }
-    
+
     #endregion
 }

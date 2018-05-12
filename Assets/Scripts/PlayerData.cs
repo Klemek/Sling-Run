@@ -11,4 +11,14 @@ public static class PlayerData
             PlayerPrefs.Save();
         }
     }
+
+    public static int Money
+    {
+        get { return !PlayerPrefs.HasKey(Constants.MoneyKey) ? 0 : PlayerPrefs.GetInt(Constants.MoneyKey); }
+        set
+        {
+            PlayerPrefs.SetInt(Constants.MoneyKey, value);
+            PlayerPrefs.Save();
+        }
+    }
 }

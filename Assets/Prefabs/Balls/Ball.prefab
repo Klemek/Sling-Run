@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212396091113427928}
   - component: {fileID: 50971275831193510}
   - component: {fileID: 114474953000294874}
-  - component: {fileID: 58744398387506530}
+  - component: {fileID: 58432138759963654}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -38,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 1763309091400294}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -3, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -63,7 +63,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &58744398387506530
+--- !u!58 &58432138759963654
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -77,7 +77,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.128
+  m_Radius: 0.256
 --- !u!114 &114474953000294874
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -89,11 +89,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f29c640e357e0440801d2e3dc458e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Locked: 0
-  Moving: 0
-  SpeedFactor: 10
   DefaultSprite: {fileID: 1754337020984228, guid: 12e4370d786a8174fb0e33cb7e4b6652,
     type: 2}
+  SpeedFactor: 10
 --- !u!212 &212396091113427928
 SpriteRenderer:
   m_ObjectHideFlags: 1
