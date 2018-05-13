@@ -94,14 +94,18 @@ public class LevelManager : MonoBehaviour
         float areaWidth;
         var maxDiff = GetMaxLevelDifficulty(level);
         var minDiff = GetMinLevelDifficulty(level);
+        var nreload = 0;
+        var nretry = 0;
         while (true)
         {
+            nretry++;
             if (reload)
             {
+                nreload++;
                 foreach (var f in frags)
                     Destroy(f.gameObject);
 
-                nFrag = 1 + Utils.RandInt(Constants.MaxFragmentNumber);
+                nFrag = 1 + Utils.RandomChances(Constants.FragmentNumberChances);
                 frags = new LevelFragment[nFrag];
             }
 
@@ -177,8 +181,8 @@ public class LevelManager : MonoBehaviour
 
         var debugLog = "";
 
-        debugLog += String.Format("Finished generating level {0:d} ({1:f}<diff:{2:f}<{3:f}) in {4:d} ms\n", level,
-            minDiff, diff, maxDiff, t1 - t0);
+        debugLog += String.Format("Finished generating level {0:d} ({1:f}<diff:{2:f}<{3:f}) in {4:d} ms ({5:d} retry with {6:d} reload)\n", level,
+            minDiff, diff, maxDiff, t1 - t0, nretry, nreload);
         debugLog += "|Area width:" + areaWidth + "\n";
 
         for (var k = 0; k < frags.Length; k++)
@@ -230,7 +234,7 @@ public class LevelManager : MonoBehaviour
         for (var i = 0; i < 10; i++)
         {
             var frag = frags[Utils.RandInt(frags.Count)];
-            switch (Utils.RandInt(3))
+            switch (Utils.RandomChances(Constants.FragmentDifficultyChances))
             {
                 default:
                     if (!frag.CanMove || frag.MovementSpeed >= Constants.MaxMovSpeed) continue;

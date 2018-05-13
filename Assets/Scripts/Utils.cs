@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public static class Utils
 {
@@ -14,6 +16,21 @@ public static class Utils
     internal static int RandInt(int max)
     {
         return Random.Range(0, max);
+    }
+
+    internal static int RandomChances(float[] chances)
+    {
+        float r;
+        var max = chances.Sum();
+        do
+        {
+            r = Random.value * max;
+        } while (Math.Abs(r) < float.Epsilon); //no zero
+        var t = 0f;
+        var k = 0;
+        while (t < r && k < chances.Length)
+            t += chances[k++];
+        return k-1;
     }
 
     #endregion

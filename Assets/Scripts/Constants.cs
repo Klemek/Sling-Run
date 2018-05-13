@@ -4,29 +4,29 @@ using UnityEngine;
 
 public static class Constants
 {
-    public const string Version = "alpha 1.0.13";
+    public const string Version = "alpha 1.0.14";
 
     #region Scenes
-    
+
     public const int MainMenuScene = 0;
     public const int GameScene = 1;
     public const int TutorialScene = 2;
-    
+
     #endregion
 
     #region Data Storage
-    
+
     public const string HighscoreKey = "highscore";
     public const string MoneyKey = "money";
     public const string TutorialKey = "tutorial";
-    
+
     #endregion
-    
+
     #region Strings
-    
+
     public const string HighscoreText = "HighScore : {0:d}";
     public const string NewHighscoreText = "New HighScore !";
-    
+
     #endregion
 
     #region UI
@@ -35,7 +35,7 @@ public static class Constants
     public const float UiAnimationTime = 0.25f;
 
     #endregion
-    
+
     #region Tags
 
     public const string DefaultTag = "Untagged";
@@ -56,13 +56,13 @@ public static class Constants
     #endregion
 
     #region Game
-    
+
     public const int CooperCoinValue = 1;
     public const int SilverCoinValue = 5;
     public const int GoldCoinValue = 20;
 
     public const int StartLife = 5;
-    
+
     #endregion
 
     #region Wall Manager
@@ -115,7 +115,15 @@ public static class Constants
     public const float LevelFragmentMinMargin = 1f;
     public const float LevelFragmentMaxMargin = 1.5f;
 
-    public const int MaxFragmentNumber = 3;
+    public static readonly float[] FragmentNumberChances = {
+        0.2f, 0.4f, 0.4f
+    };
+    
+    public static readonly float[] FragmentDifficultyChances = {
+        0.5f, 0.4f, 0.1f
+    };
+
+    private static readonly int MaxFragmentNumber = FragmentNumberChances.Length;
     public const int MaxMovSpeed = 6;
     public const int MaxRotSpeed = 8;
 
