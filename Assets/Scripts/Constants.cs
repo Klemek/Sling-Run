@@ -6,7 +6,7 @@ public static class Constants
 {
     #region Global Constants
 
-    public const string Version = "alpha 1.0.11";
+    public const string Version = "alpha 1.0.12";
 
     public const int MainMenuScene = 0;
     public const int GameScene = 1;
