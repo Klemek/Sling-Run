@@ -4,32 +4,38 @@ using UnityEngine;
 
 public static class Constants
 {
-    #region Global Constants
+    public const string Version = "alpha 1.0.13";
 
-    public const string Version = "alpha 1.0.12";
-
+    #region Scenes
+    
     public const int MainMenuScene = 0;
     public const int GameScene = 1;
+    public const int TutorialScene = 2;
+    
+    #endregion
 
+    #region Data Storage
+    
     public const string HighscoreKey = "highscore";
     public const string MoneyKey = "money";
+    public const string TutorialKey = "tutorial";
+    
+    #endregion
+    
+    #region Strings
     
     public const string HighscoreText = "HighScore : {0:d}";
-
+    public const string NewHighscoreText = "New HighScore !";
+    
     #endregion
 
-    #region Menu Constants
-
-    #endregion
-
-    #region Game Constants
+    #region UI
 
     public const string UicontrollerObjectName = "Canvas";
-
-    public const string NewHighscoreText = "New HighScore !";
     public const float UiAnimationTime = 0.25f;
 
-
+    #endregion
+    
     #region Tags
 
     public const string DefaultTag = "Untagged";
@@ -49,11 +55,15 @@ public static class Constants
 
     #endregion
 
+    #region Game
+    
     public const int CooperCoinValue = 1;
     public const int SilverCoinValue = 5;
     public const int GoldCoinValue = 20;
 
     public const int StartLife = 5;
+    
+    #endregion
 
     #region Wall Manager
 
@@ -148,6 +158,12 @@ public static class Constants
     public static readonly Vector3 PredictLineDepth = new Vector3(0, 0, 1);
 
     #endregion
+    
+    #region Pickups
+
+    public const int WobblingChance = 200;
+    public const float WobblingTime = 0.5f;
+    public const float WobblingFactor = 1.2f;
 
     #endregion
 }

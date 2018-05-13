@@ -21,4 +21,14 @@ public static class PlayerData
             PlayerPrefs.Save();
         }
     }
+    
+    public static bool HasSeenTutorial
+    {
+        get { return PlayerPrefs.HasKey(Constants.TutorialKey) && PlayerPrefs.GetInt(Constants.TutorialKey) == 1; }
+        set
+        {
+            PlayerPrefs.SetInt(Constants.TutorialKey, value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+    }
 }

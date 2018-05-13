@@ -4,7 +4,7 @@ A small mobile game made with Unity
 
 ## TODO
 
-### Progression : 19/41 => 46%
+### Progression : 21/41 => 51%
 
 * [x] ~~*Other* : Unity project creation (1)~~
 * [x] ~~*Basic engine & UI* : Camera management for mobile resolution (2)~~
@@ -17,8 +17,8 @@ A small mobile game made with Unity
 * [x] ~~*Engine* : Level generation (3)~~
 * [x] ~~*Engine* : More levels (moving, rotating, sticky, breakable, ...) (2)~~
 * [x] ~~*Engine & UI* : Money (1)~~
-* [ ] ***Basic UI* : Simple tutorial (2)**
-* [ ] *Engine* : Pickups generation (Money / Lives) (3)
+* [x] ~~*Basic UI* : Simple tutorial (2)~~
+* [ ] ***Engine* : Pickups generation (Money / Lives) (3)**
 * [ ] *Engine* : More balls (stats, skin) (1)
 * [ ] *UI* : Ball unlock with money (3)
 * [ ] *Engine* : Sounds (1)

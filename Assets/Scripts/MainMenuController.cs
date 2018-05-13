@@ -32,12 +32,20 @@ public class MainMenuController : MonoBehaviour
     
     public void PlayGame()
     {
-        SceneManager.LoadScene(Constants.GameScene);
+        if (PlayerData.HasSeenTutorial)
+            SceneManager.LoadScene(Constants.GameScene);
+        else
+            SeeTutorial();
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void SeeTutorial()
+    {
+        SceneManager.LoadScene(Constants.TutorialScene);
     }
     
     #endregion
